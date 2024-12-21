@@ -2,10 +2,10 @@
 
 Περιεχόμενα:
 
-- Όλα τα αρχεία του ai-tools-questionnaire - Softeng 2024-25 που ανεβάσατε είτε με το frontend https://ailog.softlab.ntua.gr/ είτε με το CLI tool που μπορείτε να κατεβάσετε από το frontend (υποστηρίζεται sh script για Windows & Unix).
+- Όλα τα αρχεία του ai-tools-questionnaire - Softeng 2024-25 που ανεβάσαμε με το frontend https://ailog.softlab.ntua.gr/.
 
-Προσοχή 1: προσπαθείστε τα ονόματα αρχείων να διευκολύνουν την ταξινόμηση πχ 2023-10-29-16:55-req.zip
+Τα ονόματα των αρχείων ακολουθούν το format : act_YYYY-MM-DD_HH-MM.zip
+π.χ. arc_2024-12-09_21-26.zip
   
-Προσοχή 2: κάθε αρχείο zip περιέχει α) το αρχείο μεταδεδομένων και β) το σύνολο του διαλόγου (prompts & answers) με το εργαλείο.
+Κάθε αρχείο zip περιέχει α) το αρχείο μεταδεδομένων και β) το σύνολο του διαλόγου (prompts & answers) με το εργαλείο σε μορφή txt.
   
-Δείτε το video: https://youtu.be/eUAjxCRNODU
