@@ -13,7 +13,7 @@ def get_passes(station_id, date_from, date_to):
         date_to_dt = datetime.strptime(date_to, "%Y%m%d")
 
         # Ανάκτηση του σταθμού και του operator
-        station = TollStation.query.filter_by(Toll_Station_ID=station_id).first()
+        station = TollStation.query.filter_by(TollID=station_id).first()
         if not station:
             return jsonify({"status": "failed", "info": "Station not found"}), 404
 
@@ -21,7 +21,7 @@ def get_passes(station_id, date_from, date_to):
 
         # Ανάκτηση των διελεύσεων και σχετικών tags
         passes = db.session.query(Pass, Tag).join(Tag, Pass.tag_ID == Tag.tag_ID).filter(
-            Pass.Toll_Station_ID == station_id,
+            Pass.TollID == station_id,
             Pass.timestamp >= date_from_dt,
             Pass.timestamp <= date_to_dt
         ).order_by(Pass.timestamp).all()
