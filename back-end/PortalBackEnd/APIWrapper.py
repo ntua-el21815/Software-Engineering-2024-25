@@ -18,7 +18,18 @@ class User:
         self.authenticated = False
         self.token = None
         self.opid = username
-    
+    def from_dict(self,data):
+        self.username = data['username']
+        self.authenticated = data['authenticated']
+        self.token = data['token']
+        self.opid = data['opid']
+    def to_dict(self):
+        return {
+            'username': self.username,
+            'authenticated': self.authenticated,
+            'token': self.token,
+            'opid': self.opid
+        }
     # Method to authenticate the user and get the token
     # Returns the token if successful, -1 if token is invalid, or the status code if the request failed
     def authenticate(self, password):
@@ -32,7 +43,6 @@ class User:
             'password': password
         }
 
-        # Send the POST request with form data
         headers = {
             "Content-Type": "application/x-www-form-urlencoded"  # Explicitly setting the content type
         }
@@ -45,16 +55,16 @@ class User:
             # Parse the JSON response to get the token
             data = response.json()
             self.token = data.get("token")
-            if self.token:
+            if self.token is not None:
                 print("Login successful, token received.")
                 self.authenticated = True
-                return self.token
+                return 1
             else:
                 print("Login failed, no token received.")
                 return -1
         else:
             print(f"Login failed with status code: {response.status_code}")
-            return response.status_code
+            return -1
 
     # Function to logout the user
     # Returns 1 if successful, or the status code if the request failed
@@ -76,7 +86,7 @@ class User:
             print(response.text)
             print("token:", self.token)
             return response.status_code
-    def calcCharges(self, from_date, to_date, filter):
+    def calcCharges(self, from_date, to_date):
         if not self.authenticated:
             print("User not authenticated")
             return -1
@@ -88,8 +98,10 @@ class User:
             print(response.text)
             return -1
         data = response.json()
+        # Remove the operator that is our user from the JSON response
+        data["vOpList"] = [item for item in data["vOpList"] if item["visitingOpID"] != self.opid]
         return data
-    def calcStats(self, from_date, to_date, filter):
+    def calcStats(self, from_date, to_date):
         if not self.authenticated:
             print("User not authenticated")
             return -1
