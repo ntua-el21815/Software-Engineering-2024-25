@@ -6,3 +6,4 @@ softeng_venv
 __pycache__
 *.pem
 *.env
+.vscode
