@@ -5,3 +5,4 @@ documentation/softeng24-27-Part1.zip
 softeng_venv
 __pycache__
 *.pem
+*.env
