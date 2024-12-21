@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <!-- Materialize JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</head>
+<body class="container">
+    <div class="row">
+        <div class="col s12 m6 offset-m3">
+            <h4 class="center-align">Login</h4>
+
+            <!-- Display Flash Messages -->
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="card-panel red lighten-4">
+                {{ messages[0] }}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <!-- Login Form -->
+            <form method="POST">
+                <div class="input-field">
+                    <input id="username" name="username" type="text" class="validate" required>
+                    <label for="username">Username</label>
+                </div>
+                <div class="input-field">
+                    <input id="password" name="password" type="password" class="validate" required>
+                    <label for="password">Password</label>
+                </div>
+                <button type="submit" class="btn waves-effect waves-light">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Materialize Initialization Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Materialize form inputs
+            M.updateTextFields();
+        });
+    </script>
+</body>
+</html>
+
