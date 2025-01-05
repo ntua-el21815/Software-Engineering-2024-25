@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toll Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <link rel="stylesheet" href="../static/map.css">
+</head>
+<body>
+    <header>
+        <h1>Χάρτης Διοδίων Ελλάδας</h1>
+    </header>
+    <main>
+        <div id="map-container">
+            <div id="map"></div>
+        </div>
+        <div class="actions">
+            <button id="view-my-stations">Δείτε τους σταθμούς σας</button>
+            <button id="view-other-companies">Δείτε σταθμούς άλλων εταιρειών</button>
+        </div>
+        <div id="info-panel" class="hidden">
+            <h2>Πληροφορίες Σταθμού</h2>
+            <p id="station-info">Όνομα: Example Station</p>
+            <button id="close-panel">Κλείσιμο</button>
+        </div>
+    </main>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="../static/map.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments</title>
+    <link rel="stylesheet" href="../static/payments.css">
+</head>
+<body>
+    <header>
+        <h1>Εξόφληση Οφειλών προς Τρίτους</h1>
+    </header>
+    <main>
+        <form id="payments-form">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Εταιρεία Διοδίων</th>
+                        <th>Εκκαθάριση</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Add table rows dynamically or statically -->
+                    <tr>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="company1">
+                                Εταιρεία 1
+                            </label>
+                        </td>
+                        <td>€100</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="company2">
+                                Εταιρεία 2
+                            </label>
+                        </td>
+                        <td>€200</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="company3">
+                                Εταιρεία 3
+                            </label>
+                        </td>
+                        <td>€300</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>Σύνολο</td>
+                        <td id="total">€0</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <button type="submit" id="pay-button">Πληρωμή</button>
+        </form>
+    </main>
+</body>
+<script src="../static/payments.js"></script>
+</html>
