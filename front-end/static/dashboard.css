@@ -1,0 +1,63 @@
+/* Γενικό background */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Κοντέινερ τίτλου */
+.header-container {
+    width: 100%;
+    background-color: #0066cc;
+    text-align: center;
+    padding: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-container h1 {
+    color: white;
+    font-size: 48px;
+    margin: 0;
+}
+
+/* Κοντέινερ κουμπιών */
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    margin-top: 100px;
+    gap: 10px;
+}
+
+/* Κουμπιά πλοήγησης */
+.nav-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background-color: #0066cc;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 150px; /* Σταθερό πλάτος κουμπιού */
+    text-decoration: none; /* Αφαίρεση υπογράμμισης */
+}
+
+.nav-button:hover {
+    background-color: #004da3;
+}
+
+/* Εικονίδιο βέλους */
+.nav-button .arrow {
+    font-size: 20px;
+    margin-left: 10px;
+}
+
+
