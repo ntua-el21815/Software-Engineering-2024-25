@@ -11,9 +11,32 @@
     <header>
         <h1>Χάρτης Διοδίων Ελλάδας</h1>
     </header>
+
+    <!-- Display Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="Messages">
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+
     <main>
-        <div id="map-container">
-            <div id="map"></div>
+        <div class="layout">
+            <aside class="filters">
+                <form id="filter-form" method="POST" action="/payments">
+                    <label for="start-date">Από:</label>
+                    <input type="date" id="start-date" name="start-date" required>
+        
+                    <label for="end-date">Έως:</label>
+                    <input type="date" id="end-date" name="end-date" required>
+        
+                    <button type="submit">Αποτελέσματα</button>
+                </form>
+            </aside>
+            <div id="map-container">
+                <div id="map"></div>
+            </div>
         </div>
         <div class="actions">
             <button id="view-my-stations">Δείτε τους σταθμούς σας</button>
@@ -29,5 +52,6 @@
     <script src="../static/map.js"></script>
 </body>
 </html>
+
 
 
