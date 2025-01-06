@@ -3,9 +3,10 @@ This module will provide the all functionalities that a user may need to
 perform using the Web Portal.
 '''
 
-API_LOGIN = "http://localhost:9115/api/auth/login"
-API_LOGOUT = "http://localhost:9115/api/auth/logout"
-API_CHARGES_BASE = "http://localhost:9115/api/chargesBy"
+API_LOGIN = "https://localhost:9115/api/auth/login"
+API_LOGOUT = "https://localhost:9115/api/auth/logout"
+API_CHARGES_BASE = "https://localhost:9115/api/chargesBy"
+API_STATIONS = "https://localhost:9115/api/getTollStations"
 
 import requests
 
@@ -92,7 +93,7 @@ class User:
             return -1
         opID = self.opid
         final_url = f"{API_CHARGES_BASE}/{opID}/{from_date}/{to_date}"
-        response = requests.get(final_url)
+        response = requests.get(final_url, verify=False)
         if response.status_code != 200:
             print("Error in response")
             print(response.text)
@@ -118,6 +119,17 @@ class User:
         # Printing the percentage of the total cost for each operator
         for item in charge_per_operator:
             print(f"Operator: {item['visitingOpID']}, Cost: {item['passesCost']}, Percentage: {item['passesCost']/total_cost*100}%")
+        return data
+    def getStations(self):
+        if not self.authenticated:
+            print("User not authenticated")
+            return -1
+        response = requests.get(API_STATIONS, verify=False)
+        if response.status_code != 200:
+            print("Error in response")
+            print(response.text)
+            return -1
+        data = response.json()
         return data
     
 if __name__ == "__main__":
