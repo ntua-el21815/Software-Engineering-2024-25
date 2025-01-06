@@ -2,18 +2,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('payments-form');
     const totalElement = document.getElementById('total');
     const checkboxes = form.querySelectorAll('input[type="checkbox"]');
-
+    
     // Update the total when checkboxes are clicked
-    checkboxes.forEach((checkbox) => {
+    checkboxes.forEach((checkbox, index) => {
         checkbox.addEventListener('change', () => {
             let total = 0;
-            checkboxes.forEach((cb) => {
+            checkboxes.forEach((cb, i) => {
                 if (cb.checked) {
-                    const amount = parseFloat(cb.closest('tr').querySelector('td:nth-child(2)').textContent.replace('€', ''));
-                    total += amount;
+                    total += amounts[i];
                 }
             });
-            totalElement.textContent = `€${total.toFixed(2)}`;
+            totalElement.textContent = `€${total}`;
         });
     });
 
