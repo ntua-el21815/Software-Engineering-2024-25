@@ -4,6 +4,7 @@ from routes.admin_routes import admin_routes
 from routes.pass_routes import pass_routes
 from routes.analysis_routes import analysis_routes
 from routes.auth_routes import auth_routes
+import os
 
 app = Flask(__name__)
 
@@ -22,4 +23,8 @@ def index():
     return "Welcome to the Softeng24 Toll Management API!"
 
 if __name__ == '__main__':
-    app.run(debug=True, port=9115)
+    # Τοποθεσία του αρχείου της τρέχουσας εφαρμογής
+    this_dir = os.path.dirname(os.path.abspath(__file__))
+    # Τοποθεσία του αρχείου του SSL certificate
+    context = (this_dir + '/ssl/server.crt', this_dir + '/ssl/server.key')
+    app.run(debug=True, port=9115, ssl_context=context)
