@@ -8,56 +8,62 @@
 </head>
 <body>
     <header>
-        <h1>Εξόφληση Οφειλών προς Τρίτους</h1>
+        <h1>Εξόφληση Οφειλών</h1>
     </header>
+
+    <!-- Display Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="Messages">
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+
     <main>
-        <form id="payments-form">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Εταιρεία Διοδίων</th>
-                        <th>Εκκαθάριση</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Add table rows dynamically or statically -->
-                    <tr>
-                        <td>
-                            <label>
-                                <input type="checkbox" name="company1">
-                                Εταιρεία 1
-                            </label>
-                        </td>
-                        <td>€100</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>
-                                <input type="checkbox" name="company2">
-                                Εταιρεία 2
-                            </label>
-                        </td>
-                        <td>€200</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>
-                                <input type="checkbox" name="company3">
-                                Εταιρεία 3
-                            </label>
-                        </td>
-                        <td>€300</td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td>Σύνολο</td>
-                        <td id="total">€0</td>
-                    </tr>
-                </tfoot>
-            </table>
-            <button type="submit" id="pay-button">Πληρωμή</button>
-        </form>
+        <aside class="filters">
+            <form id="filter-form" method="POST" action="/payments">
+                <label for="start-date">Από:</label>
+                <input type="date" id="start-date" name="start-date" required>
+    
+                <label for="end-date">Έως:</label>
+                <input type="date" id="end-date" name="end-date" required>
+    
+                <button type="submit">Αποτελέσματα</button>
+            </form>
+        </aside>
+        <section class="table-section">
+            <form id="payments-form">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Εταιρεία Διοδίων</th>
+                            <th>Οφειλή</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in data %}
+                        <tr>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="company{{ loop.index }}">
+                                    {{ item.Operator }}
+                                </label>
+                            </td>
+                            <td>€{{ item.Debt_Amount }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>Σύνολο</td>
+                            <td id="total">€0</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <button type="submit" id="pay-button">Πληρωμή</button>
+            </form>
+        </section>
     </main>
 </body>
 <script src="../static/payments.js"></script>
