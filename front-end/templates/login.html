@@ -1,48 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <!-- Materialize CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
-    <!-- Materialize JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="../static/login.css">
 </head>
-<body class="container">
-    <div class="row">
-        <div class="col s12 m6 offset-m3">
-            <h4 class="center-align">Login</h4>
+<body>
+    <!-- Τίτλος Εφαρμογής -->
+    <h1 class="app-title">TOLLIS</h1>
 
-            <!-- Display Flash Messages -->
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <div class="card-panel red lighten-4">
-                {{ messages[0] }}
+    <!-- Display Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="Messages">
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Κεντρικό Container -->
+    <div class="container">
+        <form action="/" method="POST">
+            <div class="input-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
             </div>
-            {% endif %}
-            {% endwith %}
-
-            <!-- Login Form -->
-            <form method="POST">
-                <div class="input-field">
-                    <input id="username" name="username" type="text" class="validate" required>
-                    <label for="username">Username</label>
-                </div>
-                <div class="input-field">
-                    <input id="password" name="password" type="password" class="validate" required>
-                    <label for="password">Password</label>
-                </div>
-                <button type="submit" class="btn waves-effect waves-light">Login</button>
-            </form>
-        </div>
+            <div class="input-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" id="login-button">Σύνδεση</button>
+        </form>
     </div>
 
-    <!-- Materialize Initialization Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Materialize form inputs
-            M.updateTextFields();
+    <!-- <script>
+        // JavaScript για το redirect στο dashboard
+        document.getElementById('login-button').addEventListener('click', () => {
+            window.location.href = 'dashboard.html'; // Μεταβαίνει στη σελίδα dashboard
         });
-    </script>
+    </script> -->
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
 

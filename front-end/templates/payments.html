@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments</title>
+    <link rel="stylesheet" href="../static/payments.css">
+</head>
+<body>
+    <header class="app-header">
+        <h1>Εξόφληση Οφειλών προς Τρίτους</h1>
+    </header>
+
+    <!-- Display Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="Messages">
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <aside class="filters">
+        <h2>Filters</h2>
+        <form id="filter-form" method="POST" action="/payments">
+    
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date" name="start-date" required>
+
+            <label for="end-date">End Date:</label>
+            <input type="date" id="end-date" name="end-date" required>
+
+            <button type="submit">Apply Filters</button>
+        </form>
+    </aside>
+
+    <main>
+        <form id="payments-form">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Εταιρεία Διοδίων</th>
+                        <th>Εκκαθάριση</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in data %}
+                    <tr>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="company{{ loop.index }}">
+                                {{ item.Operator }}
+                            </label>
+                        </td>
+                        <td>€{{ item.Debt_Amount }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>Σύνολο</td>
+                        <td id="total">€0</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <button type="submit" id="pay-button">Πληρωμή</button>
+        </form>
+    </main>
+</body>
+<script src="../static/payments.js"></script>
+</html>
