@@ -4,6 +4,7 @@ from datetime import datetime
 import json
 import csv
 import io
+from flask import jsonify
 
 app = Flask(
     __name__,
@@ -17,8 +18,8 @@ session = {}
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form.get('username')
+        password = request.form.get('password')
         cur_user = User(username)
         if cur_user.authenticate(password) > 0:
             flash(f'Welcome {username}')
@@ -27,12 +28,19 @@ def login():
             return redirect(url_for('dashboard'))
         else:
             flash('Invalid username or password')
-        return render_template('login.html')
-    return render_template('login.html')
-
+        return render_template('login.html', css_file='login.css')
+    return render_template('login.html', css_file='login.css')
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
+    if 'user' not in session:
+        flash("Please login first")
+        return redirect(url_for('login'))
+    return render_template('dashboard.html')
+
+
+@app.route('/payments', methods=['GET', 'POST'])
+def payments():
     if 'user' not in session:
         flash("Please login first")
         return redirect(url_for('login'))
@@ -43,8 +51,10 @@ def dashboard():
         cur_user.from_dict(session['user'])
 
         # Handle date filter request 
-        start_date = request.form.get('start_date')
-        end_date = request.form.get('end_date')
+        start_date = request.args.get('start-date') or request.form.get('start-date')
+        end_date = request.args.get('end-date') or request.form.get('end-date')
+
+        print(start_date, end_date) # Debugging purposes
       
         if start_date is None or end_date is None:
             flash("Please select a date range")
@@ -68,8 +78,29 @@ def dashboard():
         end_date_formatted = datetime.strptime(end_date, '%Y%m%d').strftime('%d/%m/%Y')
         flash(f"Filtering data from {start_date_formatted} to {end_date_formatted}")
         session['data'] = debt_data
-        return render_template('dashboard.html', data=debt_data)
-    return render_template('dashboard.html', data=[])
+        return render_template('payments.html', css_file='payments.css', js_file='payments.js', data=debt_data)
+    return render_template('payments.html', css_file='payments.css', js_file='payments.js', data=session['data'])
+
+@app.route('/map', methods=['GET', 'POST'])
+def map():
+    if 'user' not in session:
+        flash("Please login first")
+        return redirect(url_for('login'))
+    cur_user = User(session['user']['username'])
+    cur_user.from_dict(session['user'])
+    stations = cur_user.getStations()
+    json_stations = jsonify({"stations": stations})
+    if stations == -1:
+        flash("Error fetching data from the API")
+        return render_template('map.html', css_file='map.css')
+    return render_template('map.html', css_file='map.css', js_file='map.js', station_list=json_stations)
+
+@app.route('/statistics', methods=['GET', 'POST'])
+def statistics():
+    if 'user' not in session:
+        flash("Please login first")
+        return redirect(url_for('login'))
+    return render_template('statistics.html', css_file='statistics.css')
 
 @app.route('/make_payment', methods=['POST'])
 def make_payment():
