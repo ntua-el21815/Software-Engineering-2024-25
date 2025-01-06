@@ -18,6 +18,13 @@ header h1 {
     color: #ffffff;
 }
 
+.Messages {
+    text-align: center;
+    font-size: 24px;
+    color: #007bff;
+    margin: 0;
+}
+
 main {
     width: 80%;
     margin: 2rem auto;
