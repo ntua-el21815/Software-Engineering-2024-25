@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics</title>
+    <link rel="stylesheet" href="../static/statistics.css">
+</head>
+<body>
+    <header>
+        <h1>Statistics</h1>
+    </header>
+    <main>
+        <aside class="filters">
+            <h2>Filters</h2>
+            <form id="filter-form">
+                <label for="data-type">Select Data:</label>
+                <select id="data-type" name="data-type">
+                    <option value="passes">Passes</option>
+                    <option value="revenues">Revenues</option>
+                    <option value="debt">Debt</option>
+                </select>
+
+                <label for="start-date">Start Date:</label>
+                <input type="date" id="start-date" name="start-date" required>
+
+                <label for="end-date">End Date:</label>
+                <input type="date" id="end-date" name="end-date" required>
+
+                <button type="submit">Apply Filters</button>
+            </form>
+        </aside>
+        <section class="results">
+            <h2>Results</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Details</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="results-table">
+                    <!-- Data rows will be inserted here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <script src="../static/statistics.js"></script>
+</body>
+</html>
+

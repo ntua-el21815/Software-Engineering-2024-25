@@ -1,0 +1,13 @@
+
+documentation/softeng24-27.zip
+documentation/softeng24-27-Part1.zip
+*.bak*
+softeng_venv
+__pycache__
+*.pem
+*.env
+.vscode
+db_create.sql
+*.crt
+*.csr
+ssl

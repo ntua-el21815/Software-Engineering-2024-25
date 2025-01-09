@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../static/dashboard.css">
+</head>
+<body>
+    <!-- Τίτλος -->
+    <div class="header-container">
+        <h1>TOLLIS</h1>
+    </div>
+
+    <!-- Display Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="Messages">
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+    
+    <!-- Κουμπιά πλοήγησης -->
+    <div class="button-container">
+        <a href="{{ url_for('payments') }}" class="nav-button">
+            Πληρωμές <span class="arrow">➔</span>
+        </a>
+        <a href="{{ url_for('map') }}" class="nav-button">
+            Χάρτης <span class="arrow">➔</span>
+        </a>
+        <a href="{{ url_for('statistics') }}" class="nav-button">
+            Στατιστικά <span class="arrow">➔</span>
+        </a>
+    </div>
+</body>
+</html>

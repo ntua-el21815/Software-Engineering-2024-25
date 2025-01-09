@@ -7,6 +7,39 @@ from sqlalchemy import and_
 
 analysis_routes = Blueprint('analysis_routes', __name__)
 
+@analysis_routes.route('/getTollStations', methods=['GET'])
+def get_toll_stations():
+    try:
+        # Επιστροφή όλων των σταθμών
+        stations = TollStation.query.all()
+
+        # Δημιουργία λίστας με τους σταθμούς
+        station_list = []
+        for station in stations:
+            station_list.append({
+            "stationID": station.TollID,
+            "stationName": station.Name,
+            "stationOperator": station.OpID,
+            "Latitude": station.Lat,
+            "Longitude": station.Long,
+            "PM": station.PM,
+            "Price1": station.Price1,
+            "Price2": station.Price2,
+            "Price3": station.Price3,
+            "Price4": station.Price4
+            })
+
+        # Δημιουργία του τελικοϋ JSON αντικειμένου
+        response = {
+            "nStations": len(station_list),
+            "stationList": station_list
+        }
+
+        return jsonify(response), 200
+
+    except Exception as e:
+        return jsonify({"status": "failed", "info": str(e)}), 500
+
 @analysis_routes.route('/tollStationPasses/<tollStationID>/<date_from>/<date_to>', methods=['GET'])
 def toll_station_passes(tollStationID, date_from, date_to):
     try:
@@ -18,7 +51,7 @@ def toll_station_passes(tollStationID, date_from, date_to):
         # Ανάκτηση του σταθμού
         station = TollStation.query.filter_by(TollID=tollStationID).first()
         if not station:
-            return jsonify({"status": "failed", "info": f"TollStationID {tollStationID} not foLLLund"}), 404
+            return jsonify({"status": "failed", "info": f"TollStationID {tollStationID} not found"}), 404
 
         # Ανάκτηση των διελεύσεων για τον σταθμό και την περίοδο
         passes = db.session.query(Pass, Tag).join(Tag, Pass.tag_ID == Tag.tag_ID).filter(
