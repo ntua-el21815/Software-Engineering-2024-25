@@ -25,7 +25,7 @@ def login():
             return jsonify({"status": "failed", "info": "Missing username or password"}), 400
 
         # Find user in database
-        user = TollOperator.query.filter_by(Operator_ID=username).first()
+        user = TollOperator.query.filter_by(OpID=username).first()
 
         if user and user.password == password:
             # Generate a secure token

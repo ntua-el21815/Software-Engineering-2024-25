@@ -12,9 +12,9 @@ init_db(app)
 
 # Καταχώρηση των routes
 app.register_blueprint(admin_routes, url_prefix='/api/admin')
-app.register_blueprint(pass_routes, url_prefix='/api')
+app.register_blueprint(pass_routes, url_prefix='/api/pass')
 app.register_blueprint(analysis_routes, url_prefix='/api')
-app.register_blueprint(auth_routes, url_prefix='/api')
+app.register_blueprint(auth_routes, url_prefix='/api/auth')
 
 # Ρίζα για δοκιμή
 @app.route('/')
