@@ -3,12 +3,24 @@ This module will provide the all functionalities that a user may need to
 perform using the Web Portal.
 '''
 
+import os
+
 API_LOGIN = "https://localhost:9115/api/auth/login"
 API_LOGOUT = "https://localhost:9115/api/auth/logout"
 API_CHARGES_BASE = "https://localhost:9115/api/chargesBy"
 API_STATIONS = "https://localhost:9115/api/getTollStations"
+API_OP_NAMES = "https://localhost:9115/api/getOpNames"
 
 import requests
+
+def getOpNames():
+    response = requests.get(f"{API_OP_NAMES}", verify=False)
+    print(response)
+    if response.status_code != 200:
+        print("Error in response")
+        print(response.text)
+        return -1
+    return response.json()
 
 # The user class represents a user object who can login and logout
 # The user object stores the username, authentication status, and token
@@ -19,6 +31,7 @@ class User:
         self.authenticated = False
         self.token = None
         self.opid = username
+        self.opname = getOpNames()[self.opid]
     def from_dict(self,data):
         self.username = data['username']
         self.authenticated = data['authenticated']
