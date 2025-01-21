@@ -40,6 +40,23 @@ def get_toll_stations():
     except Exception as e:
         return jsonify({"status": "failed", "info": str(e)}), 500
 
+@analysis_routes.route('/getOpNames', methods=['GET'])
+def get_op_names():
+    try:
+        # Επιστροφή όλων των τελεστών
+        operators = TollOperator.query.all()
+
+        # Δημιουργία λίστας με τους τελεστές
+        operator_list = []
+        response = {}
+        for operator in operators:
+            response[operator.OpID] = operator.Name
+            
+        return jsonify(response), 200
+
+    except Exception as e:
+        return jsonify({"status": "failed", "info": str(e)}), 500
+
 @analysis_routes.route('/tollStationPasses/<tollStationID>/<date_from>/<date_to>', methods=['GET'])
 def toll_station_passes(tollStationID, date_from, date_to):
     try:
