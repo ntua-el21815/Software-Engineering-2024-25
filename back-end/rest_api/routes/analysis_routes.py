@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from datetime import datetime
-from models import Pass, Tag, TollStation, TollOperator
+from models import Pass, Tag, TollStation, TollOperator, Debt, Settlement
 from sqlalchemy import func
 from models import db
 from sqlalchemy import and_
@@ -45,13 +45,11 @@ def get_op_names():
     try:
         # Επιστροφή όλων των τελεστών
         operators = TollOperator.query.all()
-
         # Δημιουργία λίστας με τους τελεστές
-        operator_list = []
         response = {}
         for operator in operators:
             response[operator.OpID] = operator.Name
-            
+        print(response)
         return jsonify(response), 200
 
     except Exception as e:
@@ -173,7 +171,7 @@ def passes_cost(tollOpID, tagOpID, date_from, date_to):
         ).all()
         station_ids = [sid[0] for sid in station_ids]  # Λίστα με IDs των σταθμών
 
-        # Υπολογισμός αριθμού διελεύσεων και συνολικού κόστους
+        # Υπολογισμός αριθμού διελεύσεων και συνολικού κόστους για τα tags του tagOpID
         result = db.session.query(
             func.count(Pass.passID).label("nPasses"),
             func.sum(Pass.charge).label("passesCost")
@@ -183,7 +181,8 @@ def passes_cost(tollOpID, tagOpID, date_from, date_to):
             Pass.timestamp >= date_from_dt,
             Pass.timestamp <= date_to_dt
         ).first()
-
+        print("Result:", result)
+        
         # Ανάκτηση των αποτελεσμάτων
         n_passes = result.nPasses or 0
         passes_cost = float(result.passesCost or 0.0)
@@ -212,10 +211,9 @@ def charges_by(tollOpID, date_from, date_to):
         date_to_dt = datetime.strptime(date_to, "%Y%m%d")
 
         # Εντοπισμός των σταθμών που ανήκουν στον tollOpID
-        station_ids = TollStation.query.with_entities(TollStation.TollID).filter(
+        station_ids = db.session.query(TollStation.TollID).filter(
             TollStation.OpID == tollOpID
-        ).all()
-        station_ids = [sid[0] for sid in station_ids]  # Λίστα με IDs των σταθμών
+        ).subquery()
 
         # Υπολογισμός των διελεύσεων και του κόστους ανά visiting operator
         results = db.session.query(
@@ -250,4 +248,104 @@ def charges_by(tollOpID, date_from, date_to):
         return jsonify(response), 200
 
     except Exception as e:
+        return jsonify({"status": "failed", "info": str(e)}), 500
+
+@analysis_routes.route('/owedBy/<OpID>/<date_from>/<date_to>', methods=['GET'])
+def owed_by(OpID, date_from, date_to):
+    try:
+        # Validate date format
+        try:
+            date_from = datetime.strptime(date_from, "%Y%m%d").date()
+            date_to = datetime.strptime(date_to, "%Y%m%d").date()
+        except ValueError:
+            return jsonify({"status": "failed", "info": "Invalid date format"}), 400
+
+        # Query the Debt table to calculate the total amount owed by the operator
+        debts = db.session.query(Debt).filter(
+            and_(
+                Debt.Operator_ID_1 ==  OpID,
+                Debt.Date >= date_from,
+                Debt.Date <= date_to
+            )
+        ).all()
+
+        # Calculate the total amount owed to each operator
+
+        owed_to = {}
+        for debt in debts:
+            if debt.Operator_ID_2 not in owed_to:
+                owed_to[debt.Operator_ID_2] = 0
+            owed_to[debt.Operator_ID_2] += debt.Nominal_Debt
+
+        # Rounding the amounts to two decimal places
+        owed_to = {k: round(v, 2) for k, v in owed_to.items()}
+
+        # Create the final JSON object
+        response = {
+            "OpID": OpID,
+            "requestTimestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "periodFrom": date_from.strftime("%Y-%m-%d"),
+            "periodTo": date_to.strftime("%Y-%m-%d"),
+            "owedTo": owed_to
+        }
+
+        return jsonify(response), 200
+
+    except Exception as e:
+        return jsonify({"status": "failed", "info": str(e)}), 500
+    
+@analysis_routes.route('makePayment/<FromOpID>/<ToOpID>/<date_from>/<date_to>', methods=['POST'])
+def make_payment(FromOpID, ToOpID, date_from, date_to):
+    try:
+        # Validate date format
+        try:
+            date_from = datetime.strptime(date_from, "%Y%m%d").date()
+            date_to = datetime.strptime(date_to, "%Y%m%d").date()
+        except ValueError:
+            return jsonify({"status": "failed", "info": "Invalid date format"}), 400
+
+        # Query the Debt table to find all pending debts
+        debts = db.session.query(Debt).filter(
+            and_(
+                Debt.Operator_ID_1 == FromOpID,
+                Debt.Operator_ID_2 == ToOpID,
+                Debt.Date >= date_from,
+                Debt.Date <= date_to,
+                Debt.Status == "Pending"
+            )
+        ).all()
+
+        # Calculate the total amount to be paid
+        total_amount = sum(debt.Nominal_Debt for debt in debts)
+
+        # Update the status of the debts to "Paid"
+        for debt in debts:
+            debt.Status = "Paid"
+
+        # Create a new settlement entry
+        settlement = Settlement(
+            Operator_ID_1=FromOpID,
+            Operator_ID_2=ToOpID,
+            Amount=total_amount,
+            Date=datetime.now().date()
+        )
+        db.session.add(settlement)
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        # Create the final JSON object
+        response = {
+            "FromOpID": FromOpID,
+            "ToOpID": ToOpID,
+            "requestTimestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "periodFrom": date_from.strftime("%Y-%m-%d"),
+            "periodTo": date_to.strftime("%Y-%m-%d"),
+            "totalAmountPaid": round(total_amount, 2)
+        }
+
+        return jsonify(response), 200
+
+    except Exception as e:
+        db.session.rollback()
         return jsonify({"status": "failed", "info": str(e)}), 500
