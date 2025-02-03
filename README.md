@@ -1,7 +1,9 @@
-# SoftEng-template
+# TOLLIS (Toll Interoperability System)
 
-Template repository, used for NTUA/ECE Software Engineering, 2024-2025
+- To install all dependencies,create the database and generate all the needed certificates, use make scratch from the root directory of the project.
 
-Το αρχείο αυτό περιέχει οδηγίες για το στήσιμο του git repository που θα
-χρησιμοποιήσετε.  Στο τέλος, θα το αντικαταστήσετε με το `README.md` που
-θα περιγράφει το δικό σας project.
+- To do all of the above without creating the database automatically then simply use make
+
+- To run the api use make run_api
+
+- To run the Web Portal use make run_portal
