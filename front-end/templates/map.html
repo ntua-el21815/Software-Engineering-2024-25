@@ -28,10 +28,12 @@
         <div id="map-container">
             <div id="map"></div>
         </div>
+        {% if not admin %}
         <div class="actions">
             <button id="view-my-stations">Δείτε τους σταθμούς σας</button>
             <button id="view-other-companies">Δείτε σταθμούς άλλων εταιρειών</button>
         </div>
+        {% endif %}
         <div id="info-panel" class="hidden">
             <h2>Πληροφορίες Σταθμού</h2>
             <p id="station-info">Όνομα: Example Station</p>

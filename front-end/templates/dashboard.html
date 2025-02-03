@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="../static/dashboard.css">
+    <script>
+        // If a refresh event is detected, then reload the page
+        if (performance.navigation.type == 1) {
+            window.location.href = "{{ url_for('dashboard') }}";
+        }
+    </script>
 </head>
 <body>
     <!-- Τίτλος -->
