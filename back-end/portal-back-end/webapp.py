@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-from APIWrapper import User, getOpNames
+from api_wrapper import User, getOpNames
 from datetime import datetime
 import json
 import csv
 import io
 import os
+import socket
 
 app = Flask(
     __name__,
@@ -47,11 +48,15 @@ def payments():
     if 'user' not in session:
         flash("Please login first")
         return redirect(url_for('login'))
+    print(session['user']) # Debugging purposes
+    cur_user = User(session['user']['username'])
+    cur_user.from_dict(session['user'])
+
+    if cur_user.opid == "ADMIN":
+        flash("Payments are not available for admin users")
+        return render_template('dashboard.html', data=session['data'])
+    
     if request.method == 'POST':
-        
-        print(session['user']) # Debugging purposes
-        cur_user = User(session['user']['username'])
-        cur_user.from_dict(session['user'])
 
         # Handle date filter request 
         start_date = request.args.get('start-date') or request.form.get('start-date')
@@ -70,14 +75,12 @@ def payments():
         end_date = end_date.replace('-', '')
         
         # Get the data from the API
-        debt_data = cur_user.calcCharges(start_date, end_date)
-        if debt_data == -1:
+        debts = cur_user.calcCharges(start_date, end_date)
+        if debts == -1:
             flash("Error fetching data from the API")
             return render_template('dashboard.html', data=[])
-        debt_data = debt_data["vOpList"]
         op_names = getOpNames()
-        debt_data = [{"Operator": op_names[(item["visitingOpID"])], "Debt_Amount": item["passesCost"]} for item in debt_data]
-
+        debt_data = [{'Operator': op_names[op], 'Debt_Amount': debts[op]} for op in debts if debts[op] > 0]
         start_date_formatted = datetime.strptime(start_date, '%Y%m%d').strftime('%d/%m/%Y')
         end_date_formatted = datetime.strptime(end_date, '%Y%m%d').strftime('%d/%m/%Y')
         flash(f"Filtering data from {start_date_formatted} to {end_date_formatted}")
@@ -111,13 +114,16 @@ def map():
             "Price3": station["Price3"],
             "Price4": station["Price4"]
         })
+    if cur_user.opid == "ADMIN":
+        station_list_json = json.dumps(station_list)
+        return render_template('map.html', css_file='map.css', js_file='map.js', station_list=station_list_json, admin=True)
     station_list_json = json.dumps(station_list)
     comp_stations = json.dumps([station for station in station_list if station["stationOperator"] == cur_user.opid])
     otr_stations = json.dumps([station for station in station_list if station["stationOperator"] != cur_user.opid])
     if stations == -1:
         flash("Error fetching data from the API")
         return render_template('map.html', css_file='map.css')
-    return render_template('map.html', css_file='map.css', js_file='map.js', station_list=station_list_json,company_stations=comp_stations,other_stations=otr_stations)
+    return render_template('map.html', css_file='map.css', js_file='map.js', station_list=station_list_json,company_stations=comp_stations,other_stations=otr_stations, admin=False)
 
 @app.route('/statistics', methods=['GET', 'POST'])
 def statistics():
@@ -170,5 +176,7 @@ if __name__ == '__main__':
     this_dir = os.path.dirname(os.path.abspath(__file__))
     # Τοποθεσία του αρχείου του SSL certificate
     context = (this_dir + '/ssl/server.crt', this_dir + '/ssl/server.key')
-    app.run(host = "192.168.0.86",port = 443,debug = True,ssl_context=context)
+    ip = socket.gethostbyname(socket.gethostname())
+    print(f"Server running on https://{ip}:9115")
+    app.run(host=ip, port=443, ssl_context=context, debug=True)
 
