@@ -5,6 +5,7 @@ from routes.pass_routes import pass_routes
 from routes.analysis_routes import analysis_routes
 from routes.auth_routes import auth_routes
 import os
+import socket
 
 app = Flask(__name__)
 
@@ -27,4 +28,7 @@ if __name__ == '__main__':
     this_dir = os.path.dirname(os.path.abspath(__file__))
     # Τοποθεσία του αρχείου του SSL certificate
     context = (this_dir + '/ssl/server.crt', this_dir + '/ssl/server.key')
-    app.run(debug=True, port=9115, ssl_context=context)
+    # Απόκτηση της ip του server
+    ip = socket.gethostbyname(socket.gethostname())
+    print(f"Server running on https://{ip}:9115")
+    app.run(host=ip, port=9115, ssl_context=context, debug=True)

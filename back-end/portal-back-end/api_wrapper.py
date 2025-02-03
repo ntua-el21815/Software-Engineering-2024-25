@@ -4,14 +4,21 @@ perform using the Web Portal.
 '''
 
 import os
-
-API_LOGIN = "https://localhost:9115/api/auth/login"
-API_LOGOUT = "https://localhost:9115/api/auth/logout"
-API_CHARGES_BASE = "https://localhost:9115/api/chargesBy"
-API_STATIONS = "https://localhost:9115/api/getTollStations"
-API_OP_NAMES = "https://localhost:9115/api/getOpNames"
-
 import requests
+import urllib3
+import socket
+
+IP = socket.gethostbyname(socket.gethostname())
+
+API_LOGIN = "https://" + IP + ":9115/api/auth/login"
+API_LOGOUT = "https://" + IP + ":9115/api/auth/logout"
+API_DEBT_BASE = "https://" + IP + ":9115/api/owedBy"
+API_STATIONS = "https://" + IP + ":9115/api/getTollStations"
+API_OP_NAMES = "https://" + IP + ":9115/api/getOpNames"
+
+print(API_LOGIN)
+
+urllib3.disable_warnings()
 
 def getOpNames():
     response = requests.get(f"{API_OP_NAMES}", verify=False)
@@ -31,7 +38,7 @@ class User:
         self.authenticated = False
         self.token = None
         self.opid = username
-        self.opname = getOpNames()[self.opid]
+        self.opname = getOpNames().get(username, None)
     def from_dict(self,data):
         self.username = data['username']
         self.authenticated = data['authenticated']
@@ -104,23 +111,28 @@ class User:
         if not self.authenticated:
             print("User not authenticated")
             return -1
+        if user.opid == "ADMIN":
+            # Maybe we should implement a method to calculate charges for all operators
+            # So that the admin can see the charges for all operators
+            print("Admin user cannot calculate charges")
+            return -1
         opID = self.opid
-        final_url = f"{API_CHARGES_BASE}/{opID}/{from_date}/{to_date}"
+        final_url = f"{API_DEBT_BASE}/{opID}/{from_date}/{to_date}"
         response = requests.get(final_url, verify=False)
         if response.status_code != 200:
             print("Error in response")
             print(response.text)
             return -1
         data = response.json()
-        # Remove the operator that is our user from the JSON response
-        data["vOpList"] = [item for item in data["vOpList"] if item["visitingOpID"] != self.opid]
-        return data
+        owed_to = data["owedTo"]
+        print(f"Owed to: {owed_to}") # For debugging
+        return owed_to
     def calcStats(self, from_date, to_date):
         if not self.authenticated:
             print("User not authenticated")
             return -1
         opID = self.opid
-        final_url = f"{API_CHARGES_BASE}/{opID}/{from_date}/{to_date}"
+        final_url = f"{API_DEBT_BASE}/{opID}/{from_date}/{to_date}"
         response = requests.get(final_url)
         if response.status_code != 200:
             print("Error in response")
@@ -147,13 +159,12 @@ class User:
     
 if __name__ == "__main__":
     # Quick Test of the functionality
-    user = User("MO")
+    user = User("NAO")
     token = user.authenticate("default_password")
     if token != -1:
         print(f"Token received: {token}")
     else:
         print("Authentication failed.")
-    user_charges = user.calcCharges("20220101", "20220131", "all")
+    user_charges = user.calcCharges("20220101", "20220115")
     print(user_charges)
-    user.calcStats("20220101", "20220131", "all")
     logout = user.logout()
