@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from models import db, Pass, Tag, TollOperator, TollStation, Debt
+from models import db, Pass, Tag, TollOperator, TollStation, Debt, Settlement
 from flask import request
 import pandas as pd
 from datetime import datetime
@@ -127,10 +127,11 @@ def reset_stations():
 @admin_routes.route('/resetpasses', methods=['POST'])
 def reset_passes():
     try:
-        # Διαγραφή όλων των εγγραφών από Pass, Tag και Debt
+        # Διαγραφή όλων των εγγραφών από Pass, Tag ,Debt και Settlement
         db.session.query(Pass).delete()
         db.session.query(Tag).delete()
         db.session.query(Debt).delete()
+        db.session.query(Settlement).delete()
 
         '''
         Θα πρέπει τα passID, DebtID και TagID να ξεκινάει απο την αρχή (1) μετά το reset passes
@@ -183,7 +184,7 @@ def add_passes():
         operators = [operator.OpID for operator in operators]
 
         # Αρχικοποίηση του πίνακα debt
-        debt_acquired = {operator1: {operator2 : 0 for operator2 in operators} for operator1 in operators}
+        debt_acquired = {operator1: {operator2 : {} for operator2 in operators} for operator1 in operators}
 
         # Εισαγωγή δεδομένων στη βάση
         for index, row in df.iterrows():
@@ -249,8 +250,9 @@ def add_passes():
                 toll_station = db.session.query(TollStation).filter_by(TollID=row['tollID']).first()
             operator_owed = toll_station.OpID
             # Για τη νέα διέλευση, υπολογισμός του χρέους προς τον operator
+            date_of_pass = timestamp.date()
             if operator_owing != operator_owed:
-                debt_acquired[operator_owing][operator_owed] += row['charge']
+                debt_acquired[operator_owing][operator_owed][date_of_pass] = debt_acquired[operator_owing][operator_owed].get(date_of_pass, 0) + row['charge']
             db.session.add(new_pass)
 
         ''' 
@@ -261,13 +263,22 @@ def add_passes():
         # Εισαγωγή των χρεών στον πίνακα debt
         for operator1 in debt_acquired:
             for operator2 in debt_acquired[operator1]:
-                if debt_acquired[operator1][operator2] > 0:
+                for date in debt_acquired[operator1][operator2]:
+                    existing_debt = db.session.query(Debt).filter_by(
+                        Operator_ID_1=operator1,
+                        Operator_ID_2=operator2,
+                        Date=date
+                    ).first()
+                    if existing_debt and existing_debt.Status == "Pending":
+                        existing_debt.Nominal_Debt += debt_acquired[operator1][operator2][date]
+                        continue
+                    # Αν δεν υπάρχει ήδη χρέος για την συγκεκριμένη ημερομηνία ή είναι settled τοτε δημιουργείται νέο χρέος
                     new_debt = Debt(
                         Operator_ID_1=operator1,
                         Operator_ID_2=operator2,
-                        Nominal_Debt=debt_acquired[operator1][operator2],
-                        Date=datetime.now().date(),
-                        Status='Pending'
+                        Nominal_Debt=debt_acquired[operator1][operator2][date],
+                        Date=date,
+                        Status="Pending"
                     )
                     db.session.add(new_debt)
 
