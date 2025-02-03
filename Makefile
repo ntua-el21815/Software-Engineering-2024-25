@@ -9,6 +9,8 @@ DATABASE_DIR = back-end/rest_api/database
 
 all: init_venv install_reqs generate_ssl create_env
 
+scratch : init_venv install_reqs generate_ssl create_env create_db
+
 init_venv:
 	@if [ ! -d "$(VENV_DIR)" ]; then \
 		python -m venv $(VENV_DIR); \
