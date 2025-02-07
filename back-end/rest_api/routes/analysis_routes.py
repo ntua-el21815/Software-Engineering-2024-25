@@ -265,7 +265,8 @@ def owed_by(OpID, date_from, date_to):
             and_(
                 Debt.Operator_ID_1 ==  OpID,
                 Debt.Date >= date_from,
-                Debt.Date <= date_to
+                Debt.Date <= date_to,
+                Debt.Status == "Pending"
             )
         ).all()
 
@@ -315,6 +316,18 @@ def make_payment(FromOpID, ToOpID, date_from, date_to):
             )
         ).all()
 
+        # Create a list of debt details
+        debt_list = []
+        for debt in debts:
+            debt_list.append({
+                "Operator_ID_1": debt.Operator_ID_1,
+                "Operator_ID_2": debt.Operator_ID_2,
+                "Date": debt.Date.strftime("%Y-%m-%d"),
+                "Nominal_Debt": float(debt.Nominal_Debt),
+                "Status": debt.Status,
+                "Date_Paid": datetime.now().strftime("%Y-%m-%d")
+            })
+
         # Calculate the total amount to be paid
         total_amount = sum(debt.Nominal_Debt for debt in debts)
 
@@ -336,13 +349,14 @@ def make_payment(FromOpID, ToOpID, date_from, date_to):
 
         # Create the final JSON object
         response = {
-            "FromOpID": FromOpID,
-            "ToOpID": ToOpID,
-            "requestTimestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "periodFrom": date_from.strftime("%Y-%m-%d"),
-            "periodTo": date_to.strftime("%Y-%m-%d"),
-            "totalAmountPaid": round(total_amount, 2)
-        }
+                    "FromOpID": FromOpID,
+                    "ToOpID": ToOpID,
+                    "requestTimestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "periodFrom": date_from.strftime("%Y-%m-%d"),
+                    "periodTo": date_to.strftime("%Y-%m-%d"),
+                    "totalAmount": round(total_amount, 2),
+                    "debtList": debt_list
+                }
 
         return jsonify(response), 200
 

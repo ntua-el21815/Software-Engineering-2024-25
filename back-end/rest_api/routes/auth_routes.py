@@ -26,8 +26,12 @@ def login():
 
         # Find user in database
         user = TollOperator.query.filter_by(OpID=username).first()
+        if not user:
+            return jsonify({"status": "failed", "info": "Invalid credentials"}), 401
 
-        if user and user.password == password:
+        # Check if password matches
+
+        if user.OpID == username and user.password == password:
             # Generate a secure token
             token = secrets.token_hex(16)
             tokens[token] = username  # Store token with associated username
