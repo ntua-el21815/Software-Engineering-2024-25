@@ -46,11 +46,19 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => {
             if (!response.ok) {
+                window.location.href = '/payments';
                 throw new Error('Network response was not ok');
             }
-            return response.blob();
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("text/csv")) {
+                return response.blob();
+            } else {
+                window.location.href = '/payments';
+                throw new Error('Response is not a CSV');
+            }
         })
         .then(blob => {
+            alert('Πληρωμή ολοκληρώθηκε!');
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.style.display = 'none';
@@ -65,6 +73,5 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
         });
-        alert('Πληρωμή ολοκληρώθηκε!');
     });
 });
