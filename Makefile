@@ -20,14 +20,16 @@ install_reqs: init_venv
 	$(VENV_DIR)/Scripts/pip install -r $(REQ_FILE)
 
 generate_ssl:
-	@for dir in $(SSL_DIRS); do \
-		if [ ! -d "$$dir" ]; then \
-			mkdir -p $$dir; \
-		fi; \
-		if [ ! -f "$$dir/server.crt" ] || [ ! -f "$$dir/server.key" ]; then \
-			openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout $$dir/server.key -out $$dir/server.crt -subj "/C=GR/ST=Attiki/L=Athens/O=NTUA/OU=Unit/CN=localhost"; \
-		fi; \
-	done
+	@if [ ! -d "back-end/rest_api/ssl" ]; then \
+		mkdir -p back-end/rest_api/ssl; \
+	fi; \
+	if [ ! -d "back-end/portal-back-end/ssl" ]; then \
+		mkdir -p back-end/portal-back-end/ssl; \
+	fi; \
+	openssl req -newkey rsa:2048 -nodes -keyout server.key -out server.csr -subj "//CN=localhost"; \
+	openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt; \
+	cp server.* back-end/rest_api/ssl; \
+	cp server.* back-end/portal-back-end/ssl;
 
 create_env:
 	@if [ ! -f $(DATABASE_DIR)/.env ]; then \
