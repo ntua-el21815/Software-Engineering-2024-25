@@ -48,9 +48,20 @@
         </div>
         <div id="info-panel" class="hidden">
             <h2>Πληροφορίες Σταθμού</h2>
-            <p id="station-info">Όνομα: Example Station</p>
+            <div id="station-info"></div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Εταιρεία</th>
+                        <th>Αριθμός Passes</th>
+                        <th>Έσοδα</th>
+                    </tr>
+                </thead>
+                <tbody id="station-stats-body"></tbody>
+            </table>
             <button id="close-panel">Κλείσιμο</button>
         </div>
+        
     </main>
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
     <script src="../static/map.js"></script>

@@ -115,8 +115,11 @@ header h1 {
     border-top: 1px solid #ccc;
     padding: 1rem;
     box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    max-height: 50%; /* Περιορισμός ύψους */
+    overflow-y: auto; /* Scroll όταν το περιεχόμενο υπερβαίνει το ύψος */
     transform: translateY(100%);
     transition: transform 0.3s ease;
+    z-index: 1000;
 }
 
 #info-panel.visible {
@@ -127,6 +130,32 @@ header h1 {
     margin: 0 0 0.5rem;
 }
 
+#station-info {
+    margin-bottom: 1rem;
+}
+
+#info-panel table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+#info-panel th, #info-panel td {
+    text-align: left;
+    padding: 10px; /* Κενό ανάμεσα στα κελιά */
+    border-bottom: 1px solid #ccc;
+}
+
+#info-panel th {
+    background-color: #007bff;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+#info-panel td {
+    background-color: #fafafa;
+}
+
 #close-panel {
     background-color: #dc3545;
     color: #fff;
@@ -134,11 +163,14 @@ header h1 {
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
+    margin-top: 1rem;
 }
 
 #close-panel:hover {
     background-color: #bb1c2c;
 }
+
+
 
 .Messages {
     display: block;

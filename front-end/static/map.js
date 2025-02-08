@@ -12,18 +12,25 @@ document.addEventListener('DOMContentLoaded', () => {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    // Place markers
+    // Example toll station markers
+    const tollStations = [
+        { name: 'Toll Station 1', coords: [37.9838, 23.7275], info: 'Αθήνα - Σταθμός 1' },
+        { name: 'Toll Station 2', coords: [38.291, 21.7886], info: 'Πάτρα - Σταθμός 2' },
+        { name: 'Toll Station 3', coords: [40.6401, 22.9444], info: 'Θεσσαλονίκη - Σταθμός 3' }
+    ];
+
+    // Add markers to the map
     tollStations.forEach(station => {
-        const marker = L.marker([station.Latitude, station.Longitude]).addTo(map);
-        marker.bindPopup(`
-            <h3>${station.stationName}</h3>
-            <p>Operator: ${station.stationOperator}</p>
-            <p>Price 1: ${station.Price1} €</p>
-            <p>Price 2: ${station.Price2} €</p>
-            <p>Price 3: ${station.Price3} €</p>
-            <p>Price 4: ${station.Price4} €</p>
-        `);
+        const marker = L.marker(station.coords)
+            .addTo(map)
+            .bindPopup(station.info);
+        
+        marker.on('click', () => {
+            document.getElementById('station-info').innerText = station.info;
+            document.getElementById('info-panel').classList.add('visible');
+        });
     });
+    
 
     // Close info panel
     const closePanelButton = document.getElementById('close-panel');
@@ -33,56 +40,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Filter buttons
+    // Buttons for filtering stations
     const viewMyStationsButton = document.getElementById('view-my-stations');
     const viewOtherCompaniesButton = document.getElementById('view-other-companies');
 
-    if (viewMyStationsButton) {
-        viewMyStationsButton.addEventListener('click', () => {
-            const companyEl = document.querySelector('meta[name="company_stations"]');
-            if (!companyEl) return;
-            const myTollStations = JSON.parse(companyEl.getAttribute('content'));
+    viewMyStationsButton.addEventListener('click', () => {
+        alert('Showing your toll stations...');
+        // Add logic to highlight user's toll stations
+    });
 
-            map.eachLayer(layer => {
-                if (layer instanceof L.Marker) map.removeLayer(layer);
-            });
-
-            myTollStations.forEach(station => {
-                const marker = L.marker([station.Latitude, station.Longitude]).addTo(map);
-                marker.bindPopup(`
-                    <h3>${station.stationName}</h3>
-                    <p>Operator: ${station.stationOperator}</p>
-                    <p>Price 1: ${station.Price1} €</p>
-                    <p>Price 2: ${station.Price2} €</p>
-                    <p>Price 3: ${station.Price3} €</p>
-                    <p>Price 4: ${station.Price4} €</p>
-                `);
-            });
-        });
-    }
-
-    if (viewOtherCompaniesButton) {
-        viewOtherCompaniesButton.addEventListener('click', () => {
-            const othersEl = document.querySelector('meta[name="other_stations"]');
-            if (!othersEl) return;
-            const otherTollStations = JSON.parse(othersEl.getAttribute('content'));
-
-            map.eachLayer(layer => {
-                if (layer instanceof L.Marker) map.removeLayer(layer);
-            });
-
-            otherTollStations.forEach(station => {
-                const marker = L.marker([station.Latitude, station.Longitude]).addTo(map);
-                marker.bindPopup(`
-                    <h3>${station.stationName}</h3>
-                    <p>Operator: ${station.stationOperator}</p>
-                    <p>Price 1: ${station.Price1} €</p>
-                    <p>Price 2: ${station.Price2} €</p>
-                    <p>Price 3: ${station.Price3} €</p>
-                    <p>Price 4: ${station.Price4} €</p>
-                `);
-            });
-        });
-    }
+    viewOtherCompaniesButton.addEventListener('click', () => {
+        alert('Showing other companies’ toll stations...');
+        // Add logic to display other companies' toll stations
+    });
 });
 
