@@ -30,5 +30,4 @@ if __name__ == '__main__':
     context = (this_dir + '/ssl/server.crt', this_dir + '/ssl/server.key')
     # Απόκτηση της ip του server
     ip = socket.gethostbyname(socket.gethostname())
-    print(f"Server running on https://{ip}:9115")
     app.run(host=ip, port=9115, ssl_context=context, debug=True)

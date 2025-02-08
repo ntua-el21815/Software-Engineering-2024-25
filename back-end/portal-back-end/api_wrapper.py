@@ -15,6 +15,7 @@ API_DEBT_BASE = "https://" + IP + ":9115/api/owedBy"
 API_STATIONS = "https://" + IP + ":9115/api/getTollStations"
 API_OP_NAMES = "https://" + IP + ":9115/api/getOpNames"
 API_PAYMENT = "https://" + IP + ":9115/api/makePayment"
+API_STATION_INFO = "https://" + IP + ":9115/api/tollStationPasses"
 
 # Disable warnings for SSL certificate verification
 urllib3.disable_warnings()
@@ -25,7 +26,6 @@ urllib3.disable_warnings()
 # dict : Operator names in the form of a dictionary
 def getOpNames():
     response = requests.get(f"{API_OP_NAMES}", verify=False)
-    print(response)
     if response.status_code != 200:
         return response.status_code
     return response.json()
@@ -36,12 +36,15 @@ def getOpNames():
 # The token attribute should be used to make requests to the API whilst providing authentication
 class User:
     # Constructor for the User object
-    def __init__(self, username):
-        self.username = username    # The username of the user
-        self.authenticated = False  # The authentication status of the user
-        self.token = None           # The token received after authentication
-        self.opid = username        # The operator ID of the user, coincides with the username
-        self.opname = getOpNames().get(username, None)  # The operator that corresponds to user
+    def __init__(self, user_data=None):
+        if isinstance(user_data, dict):
+            self.from_dict(user_data)
+        else:
+            self.username = user_data
+            self.authenticated = False
+            self.token = None
+            self.opid = user_data
+            self.opname = getOpNames().get(user_data, None)
     # Method to set the attributes of the user object from a dictionary
     def from_dict(self,data):
         self.username = data['username']
@@ -140,7 +143,6 @@ class User:
             return -1
         data = response.json()
         owed_to = data["owedTo"]
-        print(f"Owed to: {owed_to}") # For debugging
         return owed_to
     
     def calcStats(self, from_date, to_date):

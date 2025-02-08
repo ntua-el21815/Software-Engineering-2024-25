@@ -50,8 +50,7 @@ def payments():
         return redirect(url_for('login'))
     
     print(session['user']) # Debugging purposes
-    cur_user = User(session['user']['username'])
-    cur_user.from_dict(session['user'])
+    cur_user = User(session['user'])
 
     if cur_user.opid == "ADMIN":
         flash("Payments are not available for admin users")
@@ -67,10 +66,10 @@ def payments():
       
         if start_date is None or end_date is None:
             flash("Please select a date range")
-            return render_template('dashboard.html', data=session['data'])
+            return redirect(url_for('payments'))
         if start_date > end_date:
             flash("Start date cannot be greater than end date")
-            return render_template('dashboard.html', data=session['data'])
+            return redirect(url_for('payments'))
         
         start_date = start_date.replace('-', '')
         end_date = end_date.replace('-', '')
@@ -98,15 +97,32 @@ def map():
     if 'user' not in session:
         flash("Please login first")
         return redirect(url_for('login'))
-    cur_user = User(session['user']['username'])
-    cur_user.from_dict(session['user'])
+    if request.method == 'POST':
+        start_date = request.form.get('start-date')
+        end_date = request.form.get('end-date')
+
+        if not start_date or not end_date:
+            flash("Please select a date range")
+            return redirect(url_for('map'))
+
+        if start_date > end_date:
+            flash("Start date cannot be greater than end date")
+            return redirect(url_for('map'))
+
+        start_date = start_date.replace('-', '')
+        end_date = end_date.replace('-', '')
+
+        # ... Here calcStats function should be called and we'll get the data from the API
+
+    cur_user = User(session['user'])
     stations = cur_user.getStations()
     station_list = []
+    op_names = getOpNames()
     for station in stations["stationList"]:
         station_list.append({
             "stationID": station["stationID"],
             "stationName": station["stationName"],
-            "stationOperator": station["stationOperator"],
+            "stationOperator": op_names[station["stationOperator"]].capitalize(),
             "Latitude": station["Latitude"],
             "Longitude": station["Longitude"],
             "PM": station["PM"],
@@ -119,19 +135,12 @@ def map():
         station_list_json = json.dumps(station_list)
         return render_template('map.html', css_file='map.css', js_file='map.js', station_list=station_list_json, admin=True)
     station_list_json = json.dumps(station_list)
-    comp_stations = json.dumps([station for station in station_list if station["stationOperator"] == cur_user.opid])
-    otr_stations = json.dumps([station for station in station_list if station["stationOperator"] != cur_user.opid])
+    comp_stations = json.dumps([station for station in station_list if station["stationOperator"] == op_names[cur_user.opid].capitalize()])
+    otr_stations = json.dumps([station for station in station_list if station["stationOperator"] != op_names[cur_user.opid].capitalize()])
     if stations == -1:
         flash("Error fetching data from the API")
         return render_template('map.html', css_file='map.css')
     return render_template('map.html', css_file='map.css', js_file='map.js', station_list=station_list_json,company_stations=comp_stations,other_stations=otr_stations, admin=False)
-
-@app.route('/statistics', methods=['GET', 'POST'])
-def statistics():
-    if 'user' not in session:
-        flash("Please login first")
-        return redirect(url_for('login'))
-    return render_template('statistics.html', css_file='statistics.css')
 
 @app.route('/make_payment', methods=['POST'])
 def make_payment():
@@ -139,8 +148,7 @@ def make_payment():
         flash("Please login first")
         return redirect(url_for('login'))
     if request.method == 'POST':
-            cur_user = User(session['user']['username'])
-            cur_user.from_dict(session['user'])
+            cur_user = User(session['user'])
             data = request.get_json()
             operators = data.get('operators', [])
             operators = [op.strip() for op in operators]
@@ -211,6 +219,5 @@ if __name__ == '__main__':
     # Τοποθεσία του αρχείου του SSL certificate
     context = (this_dir + '/ssl/server.crt', this_dir + '/ssl/server.key')
     ip = socket.gethostbyname(socket.gethostname())
-    print(f"Server running on https://{ip}:9115")
     app.run(host=ip, port=443, ssl_context=context, debug=True)
 
