@@ -6,6 +6,10 @@
     <title>Toll Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
     <link rel="stylesheet" href="../static/map.css">
+    <meta name="station_list" content="{{ station_list }}">
+    <meta name="company_stations" content="{{ company_stations }}">
+    <meta name="other_stations" content="{{ other_stations }}">
+    <meta name="admin_user" content="{{ admin }}">
 </head>
 <body>
     <header>
@@ -24,7 +28,7 @@
     <main>
         <div class="layout">
             <aside class="filters">
-                <form id="filter-form" method="POST" action="/payments">
+                <form id="filter-form" method="POST" action="/map">
                     <label for="start-date">Από:</label>
                     <input type="date" id="start-date" name="start-date" required>
         

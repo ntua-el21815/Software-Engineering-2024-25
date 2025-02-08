@@ -37,12 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         fetch('/make_payment', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                operators: selectedOperators
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ operators: selectedOperators })
         })
         .then(response => {
             if (!response.ok) {
@@ -69,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
+            location.reload();
         })
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);

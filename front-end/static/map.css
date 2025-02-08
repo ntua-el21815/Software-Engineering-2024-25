@@ -140,3 +140,47 @@ header h1 {
     background-color: #bb1c2c;
 }
 
+.Messages {
+    display: block;
+    text-align: center;
+    font-size: 16px;
+    color: #007bff;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: #e9f5ff;
+    border: 1px solid #007bff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+}
+
+.leaflet-popup-content-wrapper {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.leaflet-popup-content {
+    margin: 0.5rem;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.leaflet-popup-tip {
+    background-color: #fff;
+}
+
+.leaflet-popup-close-button {
+    color: #007bff;
+}
+
+.leaflet-popup-content h3 {
+    color: #007bff;
+    margin: 0 0 0.5rem 0;
+    font-size: 16px;
+}
+
+.leaflet-popup-content p {
+    margin: 0.25rem 0;
+    font-size: 14px;
+}
