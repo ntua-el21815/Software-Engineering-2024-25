@@ -6,9 +6,6 @@
     <title>Toll Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
     <link rel="stylesheet" href="../static/map.css">
-    <meta id="stations" data-results="{{ station_list }}">
-    <meta id="company-stations" data-results="{{ company_stations }}">
-    <meta id="other-stations" data-results="{{ other_stations }}">
 </head>
 <body>
     <header>
@@ -23,17 +20,28 @@
     </div>
     {% endif %}
     {% endwith %}
-    
+
     <main>
-        <div id="map-container">
-            <div id="map"></div>
+        <div class="layout">
+            <aside class="filters">
+                <form id="filter-form" method="POST" action="/payments">
+                    <label for="start-date">Από:</label>
+                    <input type="date" id="start-date" name="start-date" required>
+        
+                    <label for="end-date">Έως:</label>
+                    <input type="date" id="end-date" name="end-date" required>
+        
+                    <button type="submit">Αποτελέσματα</button>
+                </form>
+            </aside>
+            <div id="map-container">
+                <div id="map"></div>
+            </div>
         </div>
-        {% if not admin %}
         <div class="actions">
             <button id="view-my-stations">Δείτε τους σταθμούς σας</button>
             <button id="view-other-companies">Δείτε σταθμούς άλλων εταιρειών</button>
         </div>
-        {% endif %}
         <div id="info-panel" class="hidden">
             <h2>Πληροφορίες Σταθμού</h2>
             <p id="station-info">Όνομα: Example Station</p>
@@ -44,5 +52,6 @@
     <script src="../static/map.js"></script>
 </body>
 </html>
+
 
 
