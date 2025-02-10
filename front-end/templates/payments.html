@@ -5,11 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payments</title>
     <link rel="stylesheet" href="../static/payments.css">
+    <script src="../static/header.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>Εξόφληση Οφειλών</h1>
+     <!-- Header -->
+     <header>
+        <a id="home-link" href="dashboard">TOLLIS</a>
     </header>
+
+    <!-- Page Title -->
+    <div class="page-title">
+        <h1>Εξόφληση Οφειλών</h1>
+    </div>
 
     <!-- Display Flash Messages -->
     {% with messages = get_flashed_messages() %}
