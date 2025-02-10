@@ -212,6 +212,28 @@ def make_payment():
             session['data'] = {}
             return response
 
+@app.route('/getStats', methods=['POST'])
+def getStats():
+    if 'user' not in session:
+        flash("Please login first")
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        cur_user = User(session['user'])
+        data = request.get_json()
+        station_id = data.get('station_id', None)
+        start_date = data.get('start_date', None)
+        end_date = data.get('end_date', None)
+        if not station_id:
+            return ('Bad Request: Missing station_id', 400)
+        if not start_date or not end_date:
+            flash("Please select a date range")
+            return ('Bad Request: Missing dates', 400)
+        start_date = start_date.replace('-', '')
+        end_date = end_date.replace('-', '')
+        stats = cur_user.calcStats(start_date, end_date, station_id)
+        if stats == -1:
+            return ('Error fetching data from the API', 500)
+        return (json.dumps(stats), 200)
 
 if __name__ == '__main__':
     # Τοποθεσία του αρχείου της τρέχουσας εφαρμογής

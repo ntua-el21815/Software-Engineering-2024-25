@@ -145,10 +145,34 @@ class User:
         owed_to = data["owedTo"]
         return owed_to
     
-    def calcStats(self, from_date, to_date):
-        # This method will calculate the statistics for the user
-        pass
-    
+    def calcStats(self, from_date, to_date, station_id):
+        if not self.authenticated:
+            print("User not authenticated")
+            return -1
+        analytics_uri = f'{API_STATION_INFO}/{station_id}/{from_date}/{to_date}'
+        headers = {
+            "X-OBSERVATORY-AUTH": self.token
+        }
+        response = requests.get(analytics_uri, headers=headers, verify=False)
+        if response.status_code != 200:
+            print("Error in response")
+            print(response.text)
+            return -1
+        analytics = response.json()
+        if self.opid == "ADMIN":
+            total_revenue = sum([passing["passCharge"] for passing in analytics["passList"]], 0)
+            analytics["totalRevenue"] = total_revenue
+            return analytics
+        if analytics.get("stationOperator", None) == self.opid:
+            total_revenue = sum([passing["passCharge"] for passing in analytics["passList"]], 0)
+            analytics["totalRevenue"] = total_revenue
+        else:
+            analytics["totalRevenue"] = None
+        if analytics.get("stationOperator", None) != self.opid:
+            new_passlist = [passing for passing in analytics["passList"] if passing.get("tagProvider", None) == self.opid]
+            analytics["passList"] = new_passlist
+        return analytics
+
     # Method to get the toll stations all toll Stations from the API
     # Return Values : 
     # -1 : If the user is not authenticated or the request failed
