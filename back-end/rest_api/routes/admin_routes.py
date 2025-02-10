@@ -67,6 +67,10 @@ def reset_stations():
         # Έλεγχος για κενές τιμές
         if df.isnull().values.any():
             return jsonify({"status": "failed", "info": "CSV contains missing values"}), 400
+        
+        # Οφείλουμε να καλέσουμε την reset_passes() για να μην έχουμε foreign key violations
+        
+        reset_passes()
 
         # Διαγραφή όλων των εγγραφών στους πίνακες Toll_Station και Toll_Operator
         db.session.query(TollStation).delete(synchronize_session='fetch')

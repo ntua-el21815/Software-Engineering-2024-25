@@ -4,6 +4,17 @@ from models import Pass, Tag, TollStation, TollOperator, Debt, Settlement
 from sqlalchemy import func
 from models import db
 from sqlalchemy import and_
+from flask import request, Response
+import csv
+import io
+
+def generate_csv(data, headers):
+    """Helper function to generate CSV output."""
+    output = io.StringIO()
+    writer = csv.DictWriter(output, fieldnames=headers)
+    writer.writeheader()
+    writer.writerows(data)
+    return output.getvalue()
 
 analysis_routes = Blueprint('analysis_routes', __name__)
 
@@ -49,7 +60,6 @@ def get_op_names():
         response = {}
         for operator in operators:
             response[operator.OpID] = operator.Name
-        print(response)
         return jsonify(response), 200
 
     except Exception as e:
@@ -58,7 +68,6 @@ def get_op_names():
 @analysis_routes.route('/tollStationPasses/<tollStationID>/<date_from>/<date_to>', methods=['GET'])
 def toll_station_passes(tollStationID, date_from, date_to):
     try:
-        print("Database instance:", db)
         # Μετατροπή των ημερομηνιών σε datetime αντικείμενα
         date_from_dt = datetime.strptime(date_from, "%Y%m%d")
         date_to_dt = datetime.strptime(date_to, "%Y%m%d")
@@ -161,7 +170,7 @@ def pass_analysis(stationOpID, tagOpID, date_from, date_to):
 @analysis_routes.route('/passesCost/<tollOpID>/<tagOpID>/<date_from>/<date_to>', methods=['GET'])
 def passes_cost(tollOpID, tagOpID, date_from, date_to):
     try:
-        # Μετατροπή των ημερομηνιών σε datetime αντικείμενα
+        # Μετατροπή των ημερομηνιών
         date_from_dt = datetime.strptime(date_from, "%Y%m%d")
         date_to_dt = datetime.strptime(date_to, "%Y%m%d")
 
@@ -169,38 +178,48 @@ def passes_cost(tollOpID, tagOpID, date_from, date_to):
         station_ids = TollStation.query.with_entities(TollStation.TollID).filter(
             TollStation.OpID == tollOpID
         ).all()
-        station_ids = [sid[0] for sid in station_ids]  # Λίστα με IDs των σταθμών
+        station_ids = [sid[0] for sid in station_ids]
 
-        # Υπολογισμός αριθμού διελεύσεων και συνολικού κόστους για τα tags του tagOpID
+        # Ανάκτηση διελεύσεων που ανήκουν στον tagOpID σε σταθμούς του tollOpID
         result = db.session.query(
             func.count(Pass.passID).label("nPasses"),
             func.sum(Pass.charge).label("passesCost")
         ).join(Tag, Pass.tag_ID == Tag.tag_ID).filter(
-            Tag.OpID == tagOpID,
-            Pass.TollID.in_(station_ids),
+            Tag.OpID == tagOpID, 
+            Pass.TollID.in_(station_ids),  
             Pass.timestamp >= date_from_dt,
             Pass.timestamp <= date_to_dt
         ).first()
-        print("Result:", result)
-        
-        # Ανάκτηση των αποτελεσμάτων
-        n_passes = result.nPasses or 0
-        passes_cost = float(result.passesCost or 0.0)
 
-        # Δημιουργία του τελικού JSON αντικειμένου
-        response = {
-            "tollOpID": tollOpID,
-            "tagOpID": tagOpID,
-            "requestTimestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "periodFrom": date_from,
-            "periodTo": date_to,
-            "nPasses": n_passes,
-            "passesCost": passes_cost
-        }
+        # Ανάκτηση δεδομένων
+        n_passes = result.nPasses if result.nPasses else 0
+        passes_cost = float(result.passesCost) if result.passesCost else 0.0
 
-        return jsonify(response), 200
+        # Επιλογή μορφής εξόδου (JSON ή CSV)
+        format = request.args.get('format', 'json').lower()
+        if format == 'csv':
+            headers = ["tollOpID", "tagOpID", "nPasses", "passesCost"]
+            csv_data = generate_csv([{
+                "tollOpID": tollOpID,
+                "tagOpID": tagOpID,
+                "nPasses": n_passes,
+                "passesCost": passes_cost
+            }], headers)
+            return Response(csv_data, mimetype='text/csv')
+        else:
+            response = {
+                "tollOpID": tollOpID,
+                "tagOpID": tagOpID,
+                "requestTimestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "periodFrom": date_from,
+                "periodTo": date_to,
+                "nPasses": n_passes,
+                "passesCost": passes_cost
+            }
+            return jsonify(response), 200
 
     except Exception as e:
+        # Διαχείριση σφαλμάτων και rollback σε περίπτωση αποτυχίας
         return jsonify({"status": "failed", "info": str(e)}), 500
     
 @analysis_routes.route('/chargesBy/<tollOpID>/<date_from>/<date_to>', methods=['GET'])
