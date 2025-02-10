@@ -4,4 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         window.location.href = 'dashboard'; // Κατευθύνει στη σελίδα Dashboard
     });
+    function logout() {
+        window.location.href = '/logout';
+    }
+    
 });
