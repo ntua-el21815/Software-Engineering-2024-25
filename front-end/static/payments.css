@@ -1,3 +1,4 @@
+
 body {
     font-family: Arial, sans-serif;
     background-color: #ffffff;
@@ -6,18 +7,38 @@ body {
 }
 
 header {
-    text-align: center;
-    padding: 1rem;
+    width: 100%;
     background-color: #007bff;
-    box-shadow: 0 2px 4px rgb(255, 254, 254);
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
 }
 
-header h1 {
-    margin: 0;
-    font-size: 24px;
+header a {
+    text-decoration: none;
+    font-size: 32px;
+    font-weight: bold;
     color: #ffffff;
 }
 
+header a:hover {
+    text-decoration: underline;
+}
+
+
+/* Page Title */
+.page-title {
+    text-align: center;
+    margin-top: 6rem; 
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+}
 .Messages {
     text-align: center;
     font-size: 24px;
