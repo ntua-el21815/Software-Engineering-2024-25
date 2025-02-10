@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="../static/dashboard.css">
+    <script src="../static/header.js" defer></script>
 </head>
 <body>
-    <!-- Τίτλος -->
-    <div class="header-container">
-        <h1>TOLLIS</h1>
-    </div>
+    <!-- Header -->
+    <header>
+        <a id="home-link" href="dashboard">TOLLIS</a>
+    </header>
 
     <!-- Display Flash Messages -->
     {% with messages = get_flashed_messages() %}
@@ -21,7 +22,6 @@
     {% endif %}
     {% endwith %}
 
-    
     <!-- Κουμπιά πλοήγησης -->
     <div class="button-container">
         <a href="payments" class="nav-button">
@@ -33,6 +33,7 @@
     </div>
 </body>
 </html>
+
 
 
 
