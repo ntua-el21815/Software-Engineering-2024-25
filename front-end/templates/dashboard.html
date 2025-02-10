@@ -11,6 +11,16 @@
     <div class="header-container">
         <h1>TOLLIS</h1>
     </div>
+
+    <!-- Display Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="Messages">
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+
     
     <!-- Κουμπιά πλοήγησης -->
     <div class="button-container">

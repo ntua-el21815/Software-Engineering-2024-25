@@ -42,20 +42,17 @@
                 <div id="map"></div>
             </div>
         </div>
+        {% if not admin %}
         <div class="actions">
             <button id="view-my-stations">Δείτε τους σταθμούς σας</button>
             <button id="view-other-companies">Δείτε σταθμούς άλλων εταιρειών</button>
         </div>
+        {% endif %}
         <div id="info-panel" class="hidden">
             <h2>Πληροφορίες Σταθμού</h2>
             <div id="station-info"></div>
             <table>
                 <thead>
-                    <tr>
-                        <th>Εταιρεία</th>
-                        <th>Αριθμός Passes</th>
-                        <th>Έσοδα</th>
-                    </tr>
                 </thead>
                 <tbody id="station-stats-body"></tbody>
             </table>
