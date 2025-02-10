@@ -6,15 +6,22 @@
     <title>Toll Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
     <link rel="stylesheet" href="../static/map.css">
+    <script src="../static/header.js" defer></script>
     <meta name="station_list" content="{{ station_list }}">
     <meta name="company_stations" content="{{ company_stations }}">
     <meta name="other_stations" content="{{ other_stations }}">
     <meta name="admin_user" content="{{ admin }}">
 </head>
 <body>
-    <header>
-        <h1>Χάρτης Διοδίων Ελλάδας</h1>
-    </header>
+  <!-- Header -->
+  <header>
+    <a id="home-link" href="dashboard">TOLLIS</a>
+</header>
+
+<!-- Page Title -->
+<div class="page-title">
+    <h1>Χάρτης Διοδίων Ελλάδας</h1>
+</div>
 
     <!-- Display Flash Messages -->
     {% with messages = get_flashed_messages() %}
