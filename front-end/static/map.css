@@ -250,3 +250,29 @@ header h1 {
     margin: 0.25rem 0;
     font-size: 14px;
 }
+
+.logout-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem;
+    margin-top: 0rem; /* Δίνει χώρο κάτω από το fixed header */
+    box-sizing: border-box;
+}
+
+.logout-container button {
+    background-color: rgb(255, 0, 0);
+    color: #ffffff;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.logout-container button:hover {
+    background-color: #b30000;
+    color: white;
+}
