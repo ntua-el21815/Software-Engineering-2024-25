@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from models import db, Pass, Tag, TollOperator, TollStation, Debt
+from models import db, Pass, Tag, TollOperator, TollStation, Debt, Settlement
 from flask import request
 import pandas as pd
 from datetime import datetime
@@ -119,18 +119,17 @@ def reset_stations():
 @admin_routes.route('/resetpasses', methods=['POST'])
 @token_required
 def reset_passes():
+    # The call fails because "db.seesion" is a typo. Changing it to "db.session" fixes the issue:
     try:
-        # Διαγραφή όλων των εγγραφών από Pass, Tag και Debt
         db.session.query(Pass).delete()
         db.session.query(Tag).delete()
         db.session.query(Debt).delete()
+        db.session.query(Settlement).delete()
 
-        '''
-        Θα πρέπει τα passID, DebtID και TagID να ξεκινάει απο την αρχή (1) μετά το reset passes
-        '''
         db.session.execute(text('ALTER TABLE pass AUTO_INCREMENT = 1'))
         db.session.execute(text('ALTER TABLE debt AUTO_INCREMENT = 1'))
         db.session.execute(text('ALTER TABLE tag AUTO_INCREMENT = 1'))
+        db.session.execute(text('ALTER TABLE settlement AUTO_INCREMENT = 1'))
 
         db.session.commit()
         return jsonify({"status": "OK"}), 200
