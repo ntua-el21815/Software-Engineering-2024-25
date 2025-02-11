@@ -1,7 +1,6 @@
 from flask import Flask
 from database.db_config import init_db
 from routes.admin_routes import admin_routes
-from routes.pass_routes import pass_routes
 from routes.analysis_routes import analysis_routes
 from routes.auth_routes import auth_routes
 import os
@@ -14,7 +13,6 @@ init_db(app)
 
 # Καταχώρηση των routes
 app.register_blueprint(admin_routes, url_prefix='/api/admin')
-app.register_blueprint(pass_routes, url_prefix='/api/pass')
 app.register_blueprint(analysis_routes, url_prefix='/api')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
 
