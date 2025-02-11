@@ -6,21 +6,23 @@ from datetime import datetime
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import and_
+import os
+from routes.auth_routes import token_required 
 
 admin_routes = Blueprint('admin_routes', __name__)
 
 @admin_routes.route('/healthcheck', methods=['GET'])
+@token_required
 def healthcheck():
     try:
-        # Ελέγχει τη σύνδεση με τη βάση δεδομένων
-        db.session.execute(text('SELECT 1'))  # Χρήση του text για SQLAlchemy 2.x
+       
+        db.session.execute(text('SELECT 1'))  
 
-        # Συλλογή δεδομένων για απάντηση
-        n_stations = db.session.query(TollStation).count()  # Αριθμός σταθμών
-        n_tags = db.session.query(Tag).count()  # Αριθμός tags
-        n_passes = db.session.query(Pass).count()  # Αριθμός passes
 
-        # Δημιουργία connection string (προσαρμοσμένο για την περίπτωσή σου)
+        n_stations = db.session.query(TollStation).count()  
+        n_tags = db.session.query(Tag).count()  
+        n_passes = db.session.query(Pass).count()  
+
         connection_string = db.engine.url
 
         return jsonify({
@@ -41,64 +43,55 @@ def healthcheck():
         }), 401
     
 
+
+CSV_FILE_PATH = os.path.join(os.path.dirname(__file__), "tollstations2024.csv")
+
 @admin_routes.route('/resetstations', methods=['POST'])
+@token_required
 def reset_stations():
     try:
-        # Έλεγχος αν υπάρχει το αρχείο
-        if 'file' not in request.files:
-            return jsonify({"status": "failed", "info": "No file part"}), 400
 
-        file = request.files['file']
+        if not os.path.exists(CSV_FILE_PATH):
+            return jsonify({"status": "failed", "info": f"File not found: {CSV_FILE_PATH}"}), 400
 
-        # Έλεγχος ονόματος αρχείου και τύπου
-        if file.filename == '' or not file.filename.endswith('.csv'):
-            return jsonify({"status": "failed", "info": "Invalid file format"}), 400
+        df = pd.read_csv(CSV_FILE_PATH)
 
-        # Ανάγνωση του αρχείου CSV
-        df = pd.read_csv(file)
-
-        # Έλεγχος για τα απαιτούμενα πεδία
         required_columns_station = {'OpID', 'TollID', 'Name', 'PM', 'Locality', 'Road', 'Lat', 'Long', 'Price1', 'Price2', 'Price3', 'Price4'}
         required_columns_operator = {'OpID', 'Operator', 'Email'}
 
         if not required_columns_station.issubset(df.columns) or not required_columns_operator.issubset(df.columns):
             return jsonify({"status": "failed", "info": "Invalid CSV format"}), 400
-        
-        # Έλεγχος για κενές τιμές
+ 
         if df.isnull().values.any():
             return jsonify({"status": "failed", "info": "CSV contains missing values"}), 400
 
-        # Διαγραφή όλων των εγγραφών στους πίνακες Toll_Station και Toll_Operator
         db.session.query(TollStation).delete(synchronize_session='fetch')
         db.session.query(TollOperator).delete(synchronize_session='fetch')
 
-        # Προαιρετική δημιουργία διαχειριστικού λογαριασμού
         admin_exists = db.session.query(TollOperator).filter_by(OpID='admin').first()
-        print("Debugging admin_exists: ", admin_exists)
         if admin_exists is None:
             admin_user = TollOperator(
                 OpID='ADMIN',
                 Name='administrator',
                 Email='admin@example.com',
-                password='freepasses4all'  # Προσοχή: Στην παραγωγή, θα έπρεπε να είναι hashed!
+                password='freepasses4all'  
             )
-        db.session.add(admin_user)
+            db.session.add(admin_user)
 
-        # Εισαγωγή νέων δεδομένων από το CSV στους πίνακες Toll_Station και Toll_Operator
         operators_added = set()
         for _, row in df.iterrows():
-            # Αρχικοποίηση TollOperator (αν δεν έχει ήδη εισαχθεί)
+           
             if row['OpID'] not in operators_added:
                 new_operator = TollOperator(
                     OpID=row['OpID'],
-                    Name=row['Operator'],  # Operator στο CSV αντιστοιχεί στο Name στον πίνακα
+                    Name=row['Operator'],  
                     Email=row['Email'],
-                    password='default_password'  # Προσθήκη προεπιλεγμένου password
+                    password='default_password'  
                 )
                 db.session.add(new_operator)
                 operators_added.add(row['OpID'])
 
-            # Αρχικοποίηση TollStation
+           
             new_station = TollStation(
                 TollID=row['TollID'],
                 OpID=row['OpID'],
@@ -115,7 +108,6 @@ def reset_stations():
             )
             db.session.add(new_station)
 
-        # Commit στη βάση δεδομένων
         db.session.commit()
         return jsonify({"status": "OK"}), 200
 
@@ -123,8 +115,9 @@ def reset_stations():
         db.session.rollback()
         return jsonify({"status": "failed", "info": str(e)}), 500
 
-# Reset passes and tags
+
 @admin_routes.route('/resetpasses', methods=['POST'])
+@token_required
 def reset_passes():
     try:
         # Διαγραφή όλων των εγγραφών από Pass, Tag και Debt
@@ -148,6 +141,7 @@ def reset_passes():
 
 # Add passes from CSV
 @admin_routes.route('/addpasses', methods=['POST'])
+@token_required
 def add_passes():
     try:
         # Έλεγχος αν έχει ανεβεί αρχείο
