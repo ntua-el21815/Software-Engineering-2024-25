@@ -46,3 +46,5 @@ run_api:
 	$(VENV_DIR)/Scripts/python $(API_DIR)/app.py
 run_portal: 
 	$(VENV_DIR)/Scripts/python $(PORTAL_DIR)/webapp.py 
+activate_venv:
+	powershell -NoExit -ExecutionPolicy Bypass -Command ". .\$(VENV_DIR)\Scripts\Activate.ps1"

@@ -235,6 +235,13 @@ def getStats():
             return ('Error fetching data from the API', 500)
         return (json.dumps(stats), 200)
 
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    session.pop('data', None)
+    flash('You have been logged out')
+    return redirect(url_for('login'))
+
 if __name__ == '__main__':
     # Τοποθεσία του αρχείου της τρέχουσας εφαρμογής
     this_dir = os.path.dirname(os.path.abspath(__file__))
