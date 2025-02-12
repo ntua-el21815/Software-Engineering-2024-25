@@ -1,5 +1,7 @@
 # TOLLIS (Toll Interoperability System)
 
+- ATTENTION! If you want to deploy this project on a mac then use MakefileForMac.Simply delete the main Makefile (it is for windows) and rename MakefileForMac to Makefile.Then proceed normally.
+
 - To install all dependencies,create the database and generate all the needed certificates, use make scratch from the root directory of the project.
 We advise against doing that however.It is better to run db_create.sql on your local database connection (localhost:3306) (located in back-end/rest_api/database) and then use make.
 
