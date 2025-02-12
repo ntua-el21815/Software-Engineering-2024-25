@@ -51,7 +51,7 @@ The address at which the API and Portal are available are displayed on the conso
 - To user the cli interface :
 ```console
 foo@bar: softeng24-27 $ cd cli-client
-foo@bar: cli-client $ python ./se2427. {commands}
+foo@bar: cli-client $ python ./se2427.py {commands}
 ```
 
 ```console
