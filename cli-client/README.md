@@ -1,7 +1,6 @@
 # CLI client
 
-Ενδεικτικά περιεχόμενα:
+Εκτέλεση κλήσεων με ./se2427 scope --param1 value1 ... --format fff
 
-- Command line interface (CLI).
-- CLI functional tests.
-- CLI unit tests.
+Εκτέλεση testing με python test_cli_unit.py, python test_cli_functional.py
+
