@@ -69,22 +69,27 @@ def passanalysis(station_op, tag_op, date_from, date_to, output_format="csv"):
     """Ανάλυση διελεύσεων μεταξύ δύο operators."""
     result = api_call(f"passAnalysis/{station_op}/{tag_op}/{date_from}/{date_to}", params={"format": output_format})
 
-    if result is None:
+    if result is None or result == "":
         print("No data available or API error.")
         return
 
+    if isinstance(result, dict) and "status" in result and result["status"] == "failed":
+        print(result["info"])
+        return
+
+    if output_format == "json":
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+        return
+
     if isinstance(result, str) and result.startswith("passIndex,"):
-        print(result.replace("\\r\\n", "\n"))
+        print(result)
         return
 
     if isinstance(result, dict) and "nPasses" in result and result["nPasses"] == 0:
-        if output_format == "json":
-            print(json.dumps(result, indent=2, ensure_ascii=False))
-        else:
-            print("No passes recorded between these operators in the given period.")
+        print("passIndex,passID,stationID,timestamp,tagID,passCharge")
         return
 
-    print(json.dumps(result, indent=2, ensure_ascii=False))
+    print(f"Unexpected API response format: {json.dumps(result, indent=2, ensure_ascii=False)}")
 
 def passescost(station_op, tag_op, date_from, date_to, output_format="csv"):
     """Υπολογισμός κόστους διελεύσεων μεταξύ operators."""
@@ -92,6 +97,10 @@ def passescost(station_op, tag_op, date_from, date_to, output_format="csv"):
 
     if result is None or result == {}:
         print("No cost data available for these operators in the given period.")
+        return
+
+    if isinstance(result, dict) and "status" in result and result["status"] == "failed":
+        print(result["info"])
         return
 
     if isinstance(result, dict) and "passesCost" in result:

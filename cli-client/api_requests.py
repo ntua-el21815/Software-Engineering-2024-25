@@ -95,6 +95,11 @@ def delete_token():
         
 def login(username, password):
     """Σύνδεση χρήστη και αποθήκευση του authentication token."""
+
+    if os.path.exists(TOKEN_FILE):
+        print("You are already logged in. Please logout first before logging in again.")
+        return
+    
     data = {"username": username, "password": password}
 
     response = requests.post(f"{BASE_URL}/login", data=data, verify=False)
