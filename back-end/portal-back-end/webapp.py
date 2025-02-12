@@ -237,6 +237,8 @@ def getStats():
 
 @app.route('/logout')
 def logout():
+    cur_user = User(session['user'])
+    cur_user.logout()
     session.pop('user', None)
     session.pop('data', None)
     flash('You have been logged out')

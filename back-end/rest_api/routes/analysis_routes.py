@@ -119,6 +119,14 @@ def toll_station_passes(tollStationID, date_from, date_to):
 @token_required
 def pass_analysis(stationOpID, tagOpID, date_from, date_to):
     try:
+        station_operator = TollOperator.query.filter_by(OpID=stationOpID).first()
+        if not station_operator:
+            return jsonify({"status": "failed", "info": f"stationOpID {stationOpID} does not exist"}), 404
+
+        tag_operator = TollOperator.query.filter_by(OpID=tagOpID).first()
+        if not tag_operator:
+            return jsonify({"status": "failed", "info": f"tagOpID {tagOpID} does not exist"}), 404
+
         date_from_dt = datetime.strptime(date_from, "%Y%m%d")
         date_to_dt = datetime.strptime(date_to, "%Y%m%d")
 
@@ -166,10 +174,18 @@ def pass_analysis(stationOpID, tagOpID, date_from, date_to):
     except Exception as e:
         return jsonify({"status": "failed", "info": str(e)}), 500
 
+
 @analysis_routes.route('/passesCost/<tollOpID>/<tagOpID>/<date_from>/<date_to>', methods=['GET'])
 @token_required
 def passes_cost(tollOpID, tagOpID, date_from, date_to):
     try:
+        toll_operator = TollOperator.query.filter_by(OpID=tollOpID).first()
+        if not toll_operator:
+            return jsonify({"status": "failed", "info": f"tollOpID {tollOpID} does not exist"}), 404
+
+        tag_operator = TollOperator.query.filter_by(OpID=tagOpID).first()
+        if not tag_operator:
+            return jsonify({"status": "failed", "info": f"tagOpID {tagOpID} does not exist"}), 404
 
         date_from_dt = datetime.strptime(date_from, "%Y%m%d")
         date_to_dt = datetime.strptime(date_to, "%Y%m%d")
@@ -183,8 +199,8 @@ def passes_cost(tollOpID, tagOpID, date_from, date_to):
             func.count(Pass.passID).label("nPasses"),
             func.sum(Pass.charge).label("passesCost")
         ).join(Tag, Pass.tag_ID == Tag.tag_ID).filter(
-            Tag.OpID == tagOpID, 
-            Pass.TollID.in_(station_ids),  
+            Tag.OpID == tagOpID,
+            Pass.TollID.in_(station_ids),
             Pass.timestamp >= date_from_dt,
             Pass.timestamp <= date_to_dt
         ).first()
@@ -220,10 +236,15 @@ def passes_cost(tollOpID, tagOpID, date_from, date_to):
     except Exception as e:
         return jsonify({"status": "failed", "info": str(e)}), 500
 
+
 @analysis_routes.route('/chargesBy/<tollOpID>/<date_from>/<date_to>', methods=['GET'])
 @token_required
 def charges_by(tollOpID, date_from, date_to):
     try:
+        toll_operator = TollOperator.query.filter_by(OpID=tollOpID).first()
+        if not toll_operator:
+            return jsonify({"status": "failed", "info": f"tollOpID {tollOpID} does not exist"}), 404
+
         date_from_dt = datetime.strptime(date_from, "%Y%m%d")
         date_to_dt = datetime.strptime(date_to, "%Y%m%d")
 
@@ -268,7 +289,6 @@ def charges_by(tollOpID, date_from, date_to):
 
     except Exception as e:
         return jsonify({"status": "failed", "info": str(e)}), 500
-    
 
 @analysis_routes.route('/owedBy/<OpID>/<date_from>/<date_to>', methods=['GET'])
 @token_required

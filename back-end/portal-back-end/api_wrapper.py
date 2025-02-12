@@ -9,8 +9,8 @@ import socket
 
 IP = socket.gethostbyname(socket.gethostname())
 
-API_LOGIN = "https://" + IP + ":9115/api/auth/login"
-API_LOGOUT = "https://" + IP + ":9115/api/auth/logout"
+API_LOGIN = "https://" + IP + ":9115/api/login"
+API_LOGOUT = "https://" + IP + ":9115/api/logout"
 API_DEBT_BASE = "https://" + IP + ":9115/api/owedBy"
 API_STATIONS = "https://" + IP + ":9115/api/getTollStations"
 API_OP_NAMES = "https://" + IP + ":9115/api/getOpNames"
