@@ -18,7 +18,6 @@ def healthcheck():
        
         db.session.execute(text('SELECT 1'))  
 
-
         n_stations = db.session.query(TollStation).count()  
         n_tags = db.session.query(Tag).count()  
         n_passes = db.session.query(Pass).count()  

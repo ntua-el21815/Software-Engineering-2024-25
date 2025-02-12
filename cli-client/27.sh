@@ -7,15 +7,15 @@ python ./se2427.py login --username "$username" --passw "$password"
 read -p "Press any key to continue..."
 python ./se2427.py healthcheck
 read -p "Press any key to continue..."
-python ./se2427.py resetpasses
-read -p "Press any key to continue..."
-python ./se2427.py healthcheck
-read -p "Press any key to continue..."
-python ./se2427.py resetstations
-read -p "Press any key to continue..."
-python ./se2427.py healthcheck
-read -p "Press any key to continue..."
-python ./se2427.py admin --addpasses --source passes-sample.csv
+# python ./se2427.py resetpasses
+# read -p "Press any key to continue..."
+# python ./se2427.py healthcheck
+# read -p "Press any key to continue..."
+# python ./se2427.py resetstations
+# read -p "Press any key to continue..."
+# python ./se2427.py healthcheck
+# read -p "Press any key to continue..."
+# python ./se2427.py admin --addpasses --source passes-sample.csv
 read -p "Press any key to continue..."
 python ./se2427.py healthcheck
 read -p "Press any key to continue..."
