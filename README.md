@@ -48,7 +48,7 @@ The address at which the API and Portal are available are displayed on the conso
 * Running on https://{your_ip_address}:{port}
 ```
 
-- To user the cli interface on windows:
+- To user the cli interface :
 ```console
 foo@bar: softeng24-27 $ cd cli-client
 foo@bar: cli-client $ python ./se2427. {commands}
