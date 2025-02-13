@@ -114,13 +114,17 @@ def logout():
     """Αποσύνδεση χρήστη και διαγραφή του authentication token."""
     result = api_call("logout", method="POST")
 
+    if os.path.exists(TOKEN_FILE):
+        os.remove(TOKEN_FILE)
+    if os.path.exists(ADMIN_ACCESS_FILE):
+        os.remove(ADMIN_ACCESS_FILE)
+
     if result is None:
-        delete_token()
-        if os.path.exists(ADMIN_ACCESS_FILE):
-            os.remove(ADMIN_ACCESS_FILE)
         print("Logout successful!")
     elif isinstance(result, dict) and "status" in result and result["status"] == "failed":
         print(f"Logout failed: {result.get('info', 'Unknown error')}")
+    else:
+        print("Logout successful!")
 
 def check_admin_access():
     """Ελέγχει αν ο χρήστης είναι συνδεδεμένος ως ADMIN."""
