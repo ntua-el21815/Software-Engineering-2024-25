@@ -1,5 +1,10 @@
 # TOLLIS (Toll Interoperability System)
 
+Software Dependencies :
+- Python >= 3.10 (in PATH)
+- MySQL >= 8.0
+- Web Browser (Chrome,Firefox,Microsoft Edge etc...) with Javascript Enabled.
+
 - ATTENTION! If you want to deploy this project on a mac/linux (generally unix) then use MakefileForMac.Simply delete the main Makefile (it is for windows) and rename MakefileForMac to Makefile.Then proceed normally.
 
 - To install all dependencies,create the database and generate all the needed certificates, use make scratch from the root directory of the project.
