@@ -7,7 +7,12 @@ import requests
 import urllib3
 import socket
 
-IP = socket.gethostbyname(socket.gethostname())
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+try:
+    s.connect(('8.8.8.8', 80))
+    IP = s.getsockname()[0]
+finally:
+    s.close()
 
 API_LOGIN = "https://" + IP + ":9115/api/login"
 API_LOGOUT = "https://" + IP + ":9115/api/logout"
