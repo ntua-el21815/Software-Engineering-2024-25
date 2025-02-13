@@ -1,0 +1,163 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+header a {
+    text-decoration: none;
+    font-size: 32px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+header a:hover {
+    text-decoration: underline;
+}
+
+
+/* Page Title */
+.page-title {
+    text-align: center;
+    margin-top: 6rem; 
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+}
+.Messages {
+    text-align: center;
+    font-size: 24px;
+    color: #007bff;
+    margin: 0;
+}
+
+main {
+    width: 80%;
+    margin: 2rem auto;
+    display: flex;
+    background-color: #fff;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.filters {
+    width: 25%;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-right: 2rem;
+}
+
+.filters label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.filters input,
+.filters button {
+    width: 90%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.filters button {
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.filters button:hover {
+    background-color: #0056b3;
+}
+
+.table-section {
+    width: 75%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead th {
+    background-color: #007bff;
+    text-align: left;
+    padding: 0.5rem;
+    border-bottom: 2px solid #0056b3;
+    color: #ffffff;
+}
+
+tbody td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #0056b3;
+}
+
+tfoot td {
+    font-weight: bold;
+    padding: 0.5rem;
+    border-top: 2px solid #0056b3;
+}
+
+input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
+#pay-button {
+    display: block;
+    width: 20%;
+    margin: 0 auto;
+    padding: 0.75rem;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#pay-button:hover {
+    background-color: #0056b3;
+}
+
+#total {
+    text-align: left;
+}
+
+.Messages {
+    display: block;
+    text-align: center;
+    font-size: 16px;
+    color: #007bff;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: #e9f5ff;
+    border: 1px solid #007bff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+}

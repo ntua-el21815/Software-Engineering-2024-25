@@ -1,0 +1,278 @@
+/* Header */
+header {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+header a {
+    text-decoration: none;
+    font-size: 32px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+header a:hover {
+    text-decoration: underline;
+}
+
+/* Page Title */
+.page-title {
+    text-align: center;
+    margin-top: 6rem; 
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+header {
+    text-align: center;
+    background-color: #007bff;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #ffffff;
+}
+
+.Messages {
+    text-align: center;
+    font-size: 24px;
+    color: #007bff;
+    margin: 0;
+}
+
+.layout {
+    display: flex;
+    width: 90%;
+    margin: 2rem auto;
+    gap: 2rem;
+}
+
+.filters {
+    width: 25%;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-right: 1rem;
+}
+
+.filters label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.filters input,
+.filters button {
+    width: 95%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.filters button {
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    
+}
+
+.filters button:hover {
+    background-color: #0056b3;
+}
+
+#map-container {
+    flex-grow: 1;
+    height: 500px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 10rem;
+    margin-top: 1rem;
+}
+
+.actions button {
+    padding: 0.5rem 1rem;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.actions button:hover {
+    background-color: #0056b3;
+}
+
+#info-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+    padding: 1rem;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    max-height: 50%; /* Περιορισμός ύψους */
+    overflow-y: auto; /* Scroll όταν το περιεχόμενο υπερβαίνει το ύψος */
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+#info-panel.visible {
+    transform: translateY(0);
+}
+
+#info-panel h2 {
+    margin: 0 0 0.5rem;
+}
+
+#station-info {
+    margin-bottom: 1rem;
+}
+
+#info-panel table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+#info-panel th, #info-panel td {
+    text-align: left;
+    padding: 10px; /* Κενό ανάμεσα στα κελιά */
+    border-bottom: 1px solid #ccc;
+}
+
+#info-panel th {
+    background-color: #007bff;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+#info-panel td {
+    background-color: #fafafa;
+}
+
+#close-panel {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+#close-panel:hover {
+    background-color: #bb1c2c;
+}
+
+
+
+.Messages {
+    display: block;
+    text-align: center;
+    font-size: 16px;
+    color: #007bff;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: #e9f5ff;
+    border: 1px solid #007bff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+}
+
+.leaflet-popup-content-wrapper {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.leaflet-popup-content {
+    margin: 0.5rem;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.leaflet-popup-tip {
+    background-color: #fff;
+}
+
+.leaflet-popup-close-button {
+    color: #007bff;
+}
+
+.leaflet-popup-content h3 {
+    color: #007bff;
+    margin: 0 0 0.5rem 0;
+    font-size: 16px;
+}
+
+.leaflet-popup-content p {
+    margin: 0.25rem 0;
+    font-size: 14px;
+}
+
+.logout-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem;
+    margin-top: 0rem; /* Δίνει χώρο κάτω από το fixed header */
+    box-sizing: border-box;
+}
+
+.logout-container button {
+    background-color: rgb(255, 0, 0);
+    color: #ffffff;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.logout-container button:hover {
+    background-color: #b30000;
+    color: white;
+}

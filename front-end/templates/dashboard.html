@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../static/dashboard.css">
+    <script src="../static/header.js" defer></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a id="home-link" href="dashboard">TOLLIS</a>
+    </header>
+
+    <!-- Logout Button -->
+    <div class="logout-container">
+        <form action="/logout" method="get">
+            <button type="submit" id="logout-button">Log Out</button>
+        </form>
+    </div>
+
+    <!-- Display Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="Messages">
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Κουμπιά πλοήγησης -->
+    <div class="button-container">
+        <a href="payments" class="nav-button">
+            Πληρωμές <span class="arrow">➔</span>
+        </a>
+        <a href="map" class="nav-button">
+            Χάρτης <span class="arrow">➔</span>
+        </a>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+

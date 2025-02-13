@@ -1,0 +1,77 @@
+/* Γενικά Στυλ */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Τίτλος Εφαρμογής */
+.app-title {
+    font-size: 80px;
+    color: #007bff;
+    margin: 30px 0; /* Αφήνει κενό γύρω από τον τίτλο */
+}
+
+.Messages {
+    display: block;
+    text-align: center;
+    font-size: 16px;
+    color: #007bff;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: #e9f5ff;
+    border: 1px solid #007bff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+}
+
+/* Background για το Κεντρικό Περιεχόμενο */
+.container {
+    max-width: 400px;
+    padding: 80px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: auto; /* Κάνει το container να βρίσκεται στο κέντρο */
+    margin-top: 10px; /* Απόσταση από τον τίτλο */
+}
+
+/* Input Containers */
+.input-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+
+
+
