@@ -1,0 +1,1239 @@
+{
+	"info": {
+		"_postman_id": "d024336d-e1b8-49f4-bedb-f8da62df61bb",
+		"name": "SoftEng API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40495587",
+		"_collection_link": "https://softeng-24.postman.co/workspace/1c78126b-6d80-403c-836f-5a946522dd35/collection/40495587-d024336d-e1b8-49f4-bedb-f8da62df61bb?action=share&source=collection_link&creator=40495587"
+	},
+	"item": [
+		{
+			"name": "Logout",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-OBSERVATORY-AUTH",
+						"value": "d358c281a2441c4fdf719fa0dda3e62f",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/logout",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Save response body to a variable\", function () {",
+							"    var responseBody = pm.response.json();",
+							"    console.log(responseBody);",
+							"    var jwt = responseBody.token || responseBody.jwt || responseBody['jwt-token'] || responseBody.jwtToken;",
+							"    pm.collectionVariables.set(\"jwt\", jwt);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "freepasses4all",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health Check 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verify response body has the correct status\", function () {\r",
+							"    pm.response.to.have.jsonBody('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response body schema is as expected\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.dbconnection).to.be.a('string');\r",
+							"    pm.expect(responseData.n_passes).to.be.a('number');\r",
+							"    pm.expect(responseData.n_stations).to.be.a('number');\r",
+							"    pm.expect(responseData.n_tags).to.be.a('number');\r",
+							"    pm.expect(responseData.status).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify response body has the correct dbconnection\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.dbconnection).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify response body contains the expected number of passes, stations, and tags\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    \r",
+							"    pm.expect(responseData.n_passes).to.be.a('number');\r",
+							"    pm.expect(responseData.n_stations).to.be.a('number');\r",
+							"    pm.expect(responseData.n_tags).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-OBSERVATORY-AUTH",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/admin/healthcheck",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"healthcheck"
+					]
+				},
+				"description": "### Health Check Endpoint\n\nThis endpoint is used to perform a health check for the admin API.\n\n#### Request Body\n\nThis is a GET request and does not require a request body.\n\n#### Response Body\n\n- `dbconnection` (string): The status of the database connection.\n    \n- `n_passes` (number): The number of passes.\n    \n- `n_stations` (number): The number of stations.\n    \n- `n_tags` (number): The number of tags.\n    \n- `status` (string): The overall status.\n    \n\nThe response will be in JSON format."
+			},
+			"response": []
+		},
+		{
+			"name": "Reset Passes",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-OBSERVATORY-AUTH",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/admin/resetpasses",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"resetpasses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health Check 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verify response body has the correct status\", function () {\r",
+							"    pm.response.to.have.jsonBody('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response body schema is as expected\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.dbconnection).to.be.a('string');\r",
+							"    pm.expect(responseData.n_passes).to.be.a('number');\r",
+							"    pm.expect(responseData.n_stations).to.be.a('number');\r",
+							"    pm.expect(responseData.n_tags).to.be.a('number');\r",
+							"    pm.expect(responseData.status).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify response body has the correct dbconnection\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.dbconnection).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify response body contains the expected number of passes, stations, and tags\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    \r",
+							"    pm.expect(responseData.n_passes).to.be.a('number');\r",
+							"    pm.expect(responseData.n_stations).to.be.a('number');\r",
+							"    pm.expect(responseData.n_tags).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-OBSERVATORY-AUTH",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/admin/healthcheck",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"healthcheck"
+					]
+				},
+				"description": "### Health Check Endpoint\n\nThis endpoint is used to perform a health check for the admin API.\n\n#### Request Body\n\nThis is a GET request and does not require a request body.\n\n#### Response Body\n\n- `dbconnection` (string): The status of the database connection.\n    \n- `n_passes` (number): The number of passes.\n    \n- `n_stations` (number): The number of stations.\n    \n- `n_tags` (number): The number of tags.\n    \n- `status` (string): The overall status.\n    \n\nThe response will be in JSON format."
+			},
+			"response": []
+		},
+		{
+			"name": "Reset Stations",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is within an acceptable range\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(500);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify response status is OK\", function () {\r",
+							"    pm.expect(pm.response.json().status).to.equal(\"OK\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-OBSERVATORY-AUTH",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/admin/resetstations",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"resetstations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health Check 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verify response body has the correct status\", function () {\r",
+							"    pm.response.to.have.jsonBody('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response body schema is as expected\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.dbconnection).to.be.a('string');\r",
+							"    pm.expect(responseData.n_passes).to.be.a('number');\r",
+							"    pm.expect(responseData.n_stations).to.be.a('number');\r",
+							"    pm.expect(responseData.n_tags).to.be.a('number');\r",
+							"    pm.expect(responseData.status).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify response body has the correct dbconnection\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.dbconnection).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify response body contains the expected number of passes, stations, and tags\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    \r",
+							"    pm.expect(responseData.n_passes).to.be.a('number');\r",
+							"    pm.expect(responseData.n_stations).to.be.a('number');\r",
+							"    pm.expect(responseData.n_tags).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-OBSERVATORY-AUTH",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/admin/healthcheck",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"healthcheck"
+					]
+				},
+				"description": "### Health Check Endpoint\n\nThis endpoint is used to perform a health check for the admin API.\n\n#### Request Body\n\nThis is a GET request and does not require a request body.\n\n#### Response Body\n\n- `dbconnection` (string): The status of the database connection.\n    \n- `n_passes` (number): The number of passes.\n    \n- `n_stations` (number): The number of stations.\n    \n- `n_tags` (number): The number of tags.\n    \n- `status` (string): The overall status.\n    \n\nThe response will be in JSON format."
+			},
+			"response": []
+		},
+		{
+			"name": "Add Passes",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-OBSERVATORY-AUTH",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/Aggeliki/Downloads/passes-sample3.csv"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/admin/addpasses",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"addpasses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health Check 4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verify response body has the correct status\", function () {\r",
+							"    pm.response.to.have.jsonBody('status', 'OK');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response body schema is as expected\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.dbconnection).to.be.a('string');\r",
+							"    pm.expect(responseData.n_passes).to.be.a('number');\r",
+							"    pm.expect(responseData.n_stations).to.be.a('number');\r",
+							"    pm.expect(responseData.n_tags).to.be.a('number');\r",
+							"    pm.expect(responseData.status).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify response body has the correct dbconnection\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.dbconnection).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify response body contains the expected number of passes, stations, and tags\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    \r",
+							"    pm.expect(responseData.n_passes).to.be.a('number');\r",
+							"    pm.expect(responseData.n_stations).to.be.a('number');\r",
+							"    pm.expect(responseData.n_tags).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-OBSERVATORY-AUTH",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/admin/healthcheck",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"healthcheck"
+					]
+				},
+				"description": "### Health Check Endpoint\n\nThis endpoint is used to perform a health check for the admin API.\n\n#### Request Body\n\nThis is a GET request and does not require a request body.\n\n#### Response Body\n\n- `dbconnection` (string): The status of the database connection.\n    \n- `n_passes` (number): The number of passes.\n    \n- `n_stations` (number): The number of stations.\n    \n- `n_tags` (number): The number of tags.\n    \n- `status` (string): The overall status.\n    \n\nThe response will be in JSON format."
+			},
+			"response": []
+		},
+		{
+			"name": "Toll Stations Passes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-OBSERVATORY-AUTH",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/tollStationPasses/OO01/20220101/20220115",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"tollStationPasses",
+						"OO01",
+						"20220101",
+						"20220115"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Toll Stations Passes 1",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OBSERVATORY-AUTH",
+								"value": "91024d26f1f2859573dba953ca01a40c",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:9115/api/tollStationPasses/OO01/20220101/20220115",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "9115",
+							"path": [
+								"api",
+								"tollStationPasses",
+								"OO01",
+								"20220101",
+								"20220115"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Toll Stations Passes 2",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OBSERVATORY-AUTH",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/tollStationPasses/OO01/20220101/20220115",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tollStationPasses",
+								"OO01",
+								"20220101",
+								"20220115"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Toll Stations Passes 3",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OBSERVATORY-AUTH",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/tollStationPasses/OO01/20220101/20220115",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tollStationPasses",
+								"OO01",
+								"20220101",
+								"20220115"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Pass Analysis",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-OBSERVATORY-AUTH",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/passAnalysis/OO/NAO/20220101/20220115",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"passAnalysis",
+						"OO",
+						"NAO",
+						"20220101",
+						"20220115"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Pass Analysis",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OBSERVATORY-AUTH",
+								"value": "91024d26f1f2859573dba953ca01a40c",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:9115/api/passAnalysis/OO/NAO/20220101/20220115",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "9115",
+							"path": [
+								"api",
+								"passAnalysis",
+								"OO",
+								"NAO",
+								"20220101",
+								"20220115"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Pass Analysis",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OBSERVATORY-AUTH",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/passAnalysis/OO/NAO/20220101/20220115",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"passAnalysis",
+								"OO",
+								"NAO",
+								"20220101",
+								"20220115"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Pass Analysis",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OBSERVATORY-AUTH",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/passAnalysis/OO/NAO/20220101/20220115",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"passAnalysis",
+								"OO",
+								"NAO",
+								"20220101",
+								"20220115"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Passes Cost",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-OBSERVATORY-AUTH",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/passesCost/OO/NAO/20220101/20220115",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"passesCost",
+						"OO",
+						"NAO",
+						"20220101",
+						"20220115"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Passes Cost",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OBSERVATORY-AUTH",
+								"value": "91024d26f1f2859573dba953ca01a40c",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:9115/api/passesCost/OO/NAO/20220101/20220115",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "9115",
+							"path": [
+								"api",
+								"passesCost",
+								"OO",
+								"NAO",
+								"20220101",
+								"20220115"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Passes Cost",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OBSERVATORY-AUTH",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/passesCost/OO/NAO/20220101/20220115",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"passesCost",
+								"OO",
+								"NAO",
+								"20220101",
+								"20220115"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Passes Cost 3",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OBSERVATORY-AUTH",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/passesCost/OO/NAO/20220101/20220115",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"passesCost",
+								"OO",
+								"NAO",
+								"20220101",
+								"20220115"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Charges By",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-OBSERVATORY-AUTH",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/chargesBy/NAO/20220101/20230115",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"chargesBy",
+						"NAO",
+						"20220101",
+						"20230115"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Charges By",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OBSERVATORY-AUTH",
+								"value": "91024d26f1f2859573dba953ca01a40c",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:9115/api/chargesBy/NAO/20220101/20230115",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "9115",
+							"path": [
+								"api",
+								"chargesBy",
+								"NAO",
+								"20220101",
+								"20230115"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Charges By 2",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OBSERVATORY-AUTH",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/chargesBy/xxx/20220101/20230115",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"chargesBy",
+								"xxx",
+								"20220101",
+								"20230115"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Charges By 3",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OBSERVATORY-AUTH",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/chargesBy/NAO/2c/20230115",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"chargesBy",
+								"NAO",
+								"2c",
+								"20230115"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Owed By",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-OBSERVATORY-AUTH",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/owedBy/NAO/20220101/20220115",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"owedBy",
+						"NAO",
+						"20220101",
+						"20220115"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Owed By",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OBSERVATORY-AUTH",
+								"value": "91024d26f1f2859573dba953ca01a40c",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:9115/api/owedBy/NAO/20220101/20220115",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "9115",
+							"path": [
+								"api",
+								"owedBy",
+								"NAO",
+								"20220101",
+								"20220115"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Owed By Copy",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OBSERVATORY-AUTH",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/owedBy/XXX/20220101/20220115",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"owedBy",
+								"XXX",
+								"20220101",
+								"20220115"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Owed By 3",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OBSERVATORY-AUTH",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/owedBy/NAO/20220101/2dd",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"owedBy",
+								"NAO",
+								"20220101",
+								"2dd"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Make Payment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-OBSERVATORY-AUTH",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/makePayment/NAO/OO/20220102/20220108",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"makePayment",
+						"NAO",
+						"OO",
+						"20220102",
+						"20220108"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout 2",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-OBSERVATORY-AUTH",
+						"value": "d358c281a2441c4fdf719fa0dda3e62f",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/auth/logout",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://localhost:9115/api",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "91024d26f1f2859573dba953ca01a40c",
+			"type": "string"
+		},
+		{
+			"key": "jwt",
+			"value": ""
+		}
+	]
+}
