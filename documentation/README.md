@@ -9,3 +9,5 @@
 - Διαγράμματα UML Sequence (in ONE vpp file).
 - Διάγραμμα ER.
 - Εγγραφο SRS - Software Requirements Specification.
+- OPEN API Documentation
+- Postman Collection (API)
