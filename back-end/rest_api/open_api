@@ -1,0 +1,161 @@
+openapi: 3.0.0
+info:
+  title: Toll Interoperability API
+  description: API for managing toll station interoperability and data analysis
+  version: 1.0.0
+servers:
+  - url: https://{{host}}:9115/api
+paths:
+  /login:
+    post:
+      summary: User login
+      description: Authenticates user and returns a token
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        "400":
+          description: Bad request
+  /logout:
+    post:
+      summary: User logout
+      description: Logs out a user by invalidating the session token
+      responses:
+        "200":
+          description: Successfully logged out
+  /admin/healthcheck:
+    get:
+      summary: System health check
+      description: Checks database connectivity and system status
+      responses:
+        "200":
+          description: System is operational
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  dbconnection:
+                    type: string
+                  n_stations:
+                    type: integer
+                  n_tags:
+                    type: integer
+                  n_passes:
+                    type: integer
+  /admin/resetstations:
+    post:
+      summary: Reset toll stations
+      description: Resets the toll station data to initial values
+      responses:
+        "200":
+          description: Successfully reset stations
+  /admin/resetpasses:
+    post:
+      summary: Reset pass records
+      description: Deletes all pass records
+      responses:
+        "200":
+          description: Successfully reset passes
+  /admin/addpasses:
+    post:
+      summary: Add new pass records
+      description: Adds pass records from an uploaded CSV file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Successfully added passes
+  /tollStationPasses/{tollStationID}/{date_from}/{date_to}:
+    get:
+      summary: Get toll passes by station
+      parameters:
+        - name: tollStationID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: date_from
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: date_to
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [json, csv]
+      responses:
+        "200":
+          description: Successfully retrieved toll passes
+  /passAnalysis/{stationOpID}/{tagOpID}/{date_from}/{date_to}:
+    get:
+      summary: Analyze passes between operators
+      parameters:
+        - name: stationOpID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: tagOpID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: date_from
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: date_to
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successfully retrieved pass analysis
+  /passesCost/{tollOpID}/{tagOpID}/{date_from}/{date_to}:
+    get:
+      summary: Get pass cost between operators
+      responses:
+        "200":
+          description: Successfully retrieved pass cost
+  /chargesBy/{tollOpID}/{date_from}/{date_to}:
+    get:
+      summary: Get charges by operator
+      responses:
+        "200":
+          description: Successfully retrieved charges
