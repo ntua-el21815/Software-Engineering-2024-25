@@ -125,10 +125,10 @@ def reset_passes():
         db.session.query(Debt).delete()
         db.session.query(Settlement).delete()
 
-        db.session.execute(text('ALTER TABLE pass AUTO_INCREMENT = 1'))
-        db.session.execute(text('ALTER TABLE debt AUTO_INCREMENT = 1'))
-        db.session.execute(text('ALTER TABLE tag AUTO_INCREMENT = 1'))
-        db.session.execute(text('ALTER TABLE settlement AUTO_INCREMENT = 1'))
+        db.session.execute(text('ALTER TABLE Pass AUTO_INCREMENT = 1'))
+        db.session.execute(text('ALTER TABLE Debt AUTO_INCREMENT = 1'))
+        db.session.execute(text('ALTER TABLE Tag AUTO_INCREMENT = 1'))
+        db.session.execute(text('ALTER TABLE Settlement AUTO_INCREMENT = 1'))
 
         db.session.commit()
         return jsonify({"status": "OK"}), 200
