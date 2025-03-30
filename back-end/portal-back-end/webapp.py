@@ -249,11 +249,6 @@ if __name__ == '__main__':
     this_dir = os.path.dirname(os.path.abspath(__file__))
     # Τοποθεσία του αρχείου του SSL certificate
     context = (this_dir + '/ssl/server.crt', this_dir + '/ssl/server.key')
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:
-        s.connect(('8.8.8.8', 80))
-        ip = s.getsockname()[0]
-    finally:
-        s.close()
+    ip = "0.0.0.0"
     app.run(host=ip, port=5443, ssl_context=context, debug=True)
 

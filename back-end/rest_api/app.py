@@ -42,14 +42,5 @@ if __name__ == '__main__':
     # Τοποθεσία του αρχείου του SSL certificate
     context = (this_dir + '/ssl/server.crt', this_dir + '/ssl/server.key')
     # Απόκτηση της ip του server
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:
-        s.connect(('8.8.8.8', 80))
-        ip = s.getsockname()[0]
-    finally:
-        s.close()
-    with app.app_context():
-        # Δημιουργία του admin user
-        create_admin()
-    # Εκκίνηση του server
+    ip = "0.0.0.0"
     app.run(host=ip, port=9115, ssl_context=context, debug=True)
