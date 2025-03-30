@@ -37,6 +37,8 @@ def index():
     return "Welcome to the Softeng24 Toll Management API!"
 
 if __name__ == '__main__':
+    with app.app_context():
+        create_admin()
     # Τοποθεσία του αρχείου της τρέχουσας εφαρμογής
     this_dir = os.path.dirname(os.path.abspath(__file__))
     # Τοποθεσία του αρχείου του SSL certificate

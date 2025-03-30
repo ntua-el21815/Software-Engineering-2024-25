@@ -99,6 +99,18 @@ Consult the CLI help (`python ./se2427.py --help`) for more details.
 
 ## Further Information
 
+Dummy Users (They work for the cli client and the web portal)
+- ADMIN freepasses4all
+- NAO default_password
+- AM  default_password 
+- EG	default_password  
+- GE	default_password  
+- KO	default_password  
+- MO	default_password  
+- NAO	default_password  
+- NO	default_password  
+- OO  default_password  
+
 Refer to the accompanying SRS (SRS-softeng24-27.docx) in the “documentation” directory for a detailed functional and technical breakdown:
 - Requirements
 - Use cases
